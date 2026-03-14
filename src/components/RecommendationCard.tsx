@@ -1,8 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Category, TimeOfDay, WatchItem, EatItem, ReadItem, ListenItem } from "@/data/recommendations";
+import confetti from "canvas-confetti";
+import type { Category, WatchItem, EatItem, ReadItem, ListenItem, TimeOfDay } from "@/data/recommendations";
 import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getRecommendation } from "@/data/recommendations";
 import type { UserProfile } from "@/data/onboarding";
+import { addHistoryEntry, updateHistoryFeedback } from "@/data/history";
+import { getTimeOverride } from "@/data/timeOverride";
+import type { Friend } from "@/data/friends";
+import { blendProfiles } from "@/data/friends";
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -10,19 +15,21 @@ interface RecommendationCardProps {
   category: Category;
   profile: UserProfile;
   onHome: () => void;
+  friend?: Friend | null;
 }
 
 type AnyItem = WatchItem | EatItem | ReadItem | ListenItem;
 
 const CATEGORY_META: Record<Category, { label: string; actionLabel: string; colorClass: string }> = {
-  watch: { label: "Watch", actionLabel: "Open on YouTube", colorClass: "category-watch" },
-  eat: { label: "Eat", actionLabel: "Order on Swiggy", colorClass: "category-eat" },
-  read: { label: "Read", actionLabel: "Read Now", colorClass: "category-read" },
-  listen: { label: "Listen", actionLabel: "Play on Spotify", colorClass: "category-listen" },
+  watch: { label: "Watch", actionLabel: "Let's go →", colorClass: "category-watch" },
+  eat: { label: "Eat", actionLabel: "Let's go →", colorClass: "category-eat" },
+  read: { label: "Read", actionLabel: "Let's go →", colorClass: "category-read" },
+  listen: { label: "Listen", actionLabel: "Let's go →", colorClass: "category-listen" },
 };
 
 function getItem(category: Category, profile: UserProfile): AnyItem {
-  const time = profile.timeOfDay as TimeOfDay;
+  const override = getTimeOverride();
+  const time = (override || profile.timeOfDay) as TimeOfDay;
   switch (category) {
     case "watch": return getRecommendation(WATCH_DATA, profile.watchTags, time);
     case "eat": return getRecommendation(EAT_DATA, profile.eatTags, time);
@@ -32,36 +39,89 @@ function getItem(category: Category, profile: UserProfile): AnyItem {
 }
 
 function getUrl(category: Category, item: AnyItem): string {
-  if ("url" in item) return (item as { url: string }).url;
-  return "https://www.swiggy.com";
+  if (category === "watch" && "url" in item) return (item as WatchItem).url;
+  if (category === "eat") {
+    const e = item as EatItem;
+    return `https://www.swiggy.com/search?query=${encodeURIComponent(e.name)}`;
+  }
+  if (category === "read" && "url" in item) return (item as ReadItem).url;
+  if (category === "listen" && "url" in item) return (item as ListenItem).url;
+  return "#";
 }
 
-export default function RecommendationCard({ category, profile, onHome }: RecommendationCardProps) {
+function getItemTitle(category: Category, item: AnyItem): string {
+  if ("title" in item) return (item as { title: string }).title;
+  if ("name" in item) return (item as { name: string }).name;
+  return "Unknown";
+}
+
+export default function RecommendationCard({ category, profile, onHome, friend }: RecommendationCardProps) {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<AnyItem | null>(null);
   const [rerolled, setRerolled] = useState(false);
+  const [historyId, setHistoryId] = useState<string | null>(null);
+  const [feedbackState, setFeedbackState] = useState<"none" | "regret-form" | "done">("none");
+  const [regretNote, setRegretNote] = useState("");
 
   const meta = CATEGORY_META[category];
 
-  const generate = () => {
+  const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
+
+  const generate = (useOwnProfile = false) => {
     setLoading(true);
+    setFeedbackState("none");
+    setRegretNote("");
+    const p = useOwnProfile ? profile : effectiveProfile;
     setTimeout(() => {
-      setItem(getItem(category, profile));
+      const newItem = getItem(category, p);
+      setItem(newItem);
+      const override = getTimeOverride();
+      const time = (override || profile.timeOfDay) as TimeOfDay;
+      const entry = addHistoryEntry({
+        category,
+        itemTitle: getItemTitle(category, newItem),
+        timeOfDay: time,
+        feedback: null,
+        friendId: useOwnProfile ? undefined : friend?.id,
+        friendName: useOwnProfile ? undefined : friend?.name,
+      });
+      setHistoryId(entry.id);
       setLoading(false);
     }, 1200);
   };
 
-  useEffect(() => {
-    generate();
-  }, [category]);
+  useState(() => { generate(); });
 
   const handleReroll = () => {
     setRerolled(true);
     generate();
   };
 
+  const handleNoRegret = () => {
+    if (historyId) updateHistoryFeedback(historyId, "no-regret");
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ["#4dd0e1", "#ffb74d", "#7c6bc4", "#e57373"],
+    });
+    setFeedbackState("done");
+    setTimeout(onHome, 1500);
+  };
+
+  const handleRegretSubmit = () => {
+    if (historyId) updateHistoryFeedback(historyId, "regret", regretNote);
+    setFeedbackState("done");
+    setTimeout(onHome, 2000);
+  };
+
+  const handleUseOwnTaste = () => {
+    setRerolled(false);
+    generate(true);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6">
+    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pb-20">
       <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
@@ -94,6 +154,13 @@ export default function RecommendationCard({ category, profile, onHome }: Recomm
             transition={transition}
           >
             <p className={`text-meta mb-3 ${meta.colorClass}`}>{meta.label}</p>
+
+            {friend && (
+              <p className="text-xs text-muted-foreground mb-4">
+                Picked for you, {friend.name}'s style 👀
+              </p>
+            )}
+
             <p className="text-sm text-muted-foreground mb-6">We found this for you.</p>
 
             <div className="shadow-card rounded-2xl bg-card p-6 mb-6">
@@ -149,34 +216,98 @@ export default function RecommendationCard({ category, profile, onHome }: Recomm
               })()}
             </div>
 
-            {/* Action button */}
-            <motion.a
-              href={getUrl(category, item)}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileTap={{ scale: 0.97 }}
-              className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
-            >
-              {meta.actionLabel}
-            </motion.a>
+            {feedbackState === "none" && (
+              <>
+                {/* CTA */}
+                <motion.a
+                  href={getUrl(category, item)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileTap={{ scale: 0.97 }}
+                  className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
+                >
+                  {meta.actionLabel}
+                </motion.a>
 
-            {/* Re-roll */}
-            {!rerolled && (
-              <button
-                onClick={handleReroll}
-                className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+                {/* Feedback buttons */}
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={() => setFeedbackState("regret-form")}
+                    className="flex-1 py-3 text-xs text-muted-foreground hover:text-foreground border border-border rounded-xl transition-colors"
+                  >
+                    Yes, regret this
+                  </button>
+                  <button
+                    onClick={handleNoRegret}
+                    className="flex-1 py-3 text-xs text-foreground bg-card shadow-card rounded-xl hover:shadow-card-hover transition-all"
+                  >
+                    No regrets ✓
+                  </button>
+                </div>
+
+                {/* Re-roll */}
+                {!rerolled && (
+                  <button
+                    onClick={handleReroll}
+                    className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Not this time.
+                  </button>
+                )}
+
+                {/* Use own taste when friend-influenced */}
+                {friend && (
+                  <button
+                    onClick={handleUseOwnTaste}
+                    className="mt-2 w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Use my own taste instead
+                  </button>
+                )}
+              </>
+            )}
+
+            {feedbackState === "regret-form" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-2"
               >
-                Not this time.
-              </button>
+                <p className="text-sm text-foreground mb-3">What would have been better?</p>
+                <textarea
+                  value={regretNote}
+                  onChange={e => setRegretNote(e.target.value)}
+                  placeholder="Tell us..."
+                  className="w-full bg-card border border-border rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground resize-none h-20 focus:outline-none focus:ring-1 focus:ring-ring"
+                />
+                <button
+                  onClick={handleRegretSubmit}
+                  className="mt-3 w-full h-12 rounded-xl bg-foreground text-background text-sm font-medium"
+                >
+                  Submit
+                </button>
+              </motion.div>
+            )}
+
+            {feedbackState === "done" && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-sm text-muted-foreground mt-6"
+              >
+                {historyId && regretNote ? "Got it. I'll do better next time." : "🎉"}
+              </motion.p>
             )}
 
             {/* Back home */}
-            <button
-              onClick={onHome}
-              className="mt-6 w-full text-center text-meta hover:text-foreground transition-colors"
-            >
-              ← Start over
-            </button>
+            {feedbackState !== "done" && (
+              <button
+                onClick={onHome}
+                className="mt-6 w-full text-center text-meta hover:text-foreground transition-colors"
+              >
+                ← Start over
+              </button>
+            )}
           </motion.div>
         ) : null}
       </AnimatePresence>
