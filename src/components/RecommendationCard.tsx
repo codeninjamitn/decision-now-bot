@@ -4,7 +4,7 @@ import type { Category, TimeOfDay, WatchItem, EatItem, ReadItem, ListenItem } fr
 import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getRecommendation } from "@/data/recommendations";
 import type { UserProfile } from "@/data/onboarding";
 
-const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] };
+const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
 interface RecommendationCardProps {
   category: Category;

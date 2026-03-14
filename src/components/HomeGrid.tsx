@@ -8,7 +8,7 @@ const CATEGORIES: { id: Category; label: string; emoji: string; colorClass: stri
   { id: "listen", label: "Listen to something", emoji: "🎧", colorClass: "category-listen", bgClass: "bg-category-listen" },
 ];
 
-const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] };
+const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
 interface HomeGridProps {
   onSelect: (category: Category) => void;
