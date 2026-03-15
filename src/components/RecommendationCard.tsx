@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import type { Category, WatchItem, EatItem, ReadItem, ListenItem, TimeOfDay } from "@/data/recommendations";
 import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getLanguageAwareRecommendation, getFoodRecommendation } from "@/data/recommendations";
 import type { UserProfile } from "@/data/onboarding";
-import { addHistoryEntry, updateHistoryFeedback } from "@/data/history";
+import { addHistoryEntry, updateHistoryFeedback, loadHistory } from "@/data/history";
 import { getTimeOverride } from "@/data/timeOverride";
 import type { Friend } from "@/data/friends";
 import { blendProfiles } from "@/data/friends";
