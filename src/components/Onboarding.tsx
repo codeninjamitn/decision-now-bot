@@ -24,6 +24,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   // Food compound step state
   const [foodType, setFoodType] = useState<FoodType | null>(null);
   const [foodMood, setFoodMood] = useState<FoodMood | null>(null);
+  const [foodPlatform, setFoodPlatform] = useState<FoodPlatform | null>(null);
 
   const question = ONBOARDING_QUESTIONS[step];
   const isLast = step === ONBOARDING_QUESTIONS.length - 1;
