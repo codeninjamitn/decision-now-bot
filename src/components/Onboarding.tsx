@@ -57,6 +57,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         listenTags: (currentAnswers.listenTags as string[]) || [],
         foodType: (currentAnswers.foodType as FoodType) || 'Both',
         foodMood: (currentAnswers.foodMood as FoodMood) || 'Comfort',
+        foodPlatform: (currentAnswers.foodPlatform as FoodPlatform) || 'any',
         cuisines: (currentAnswers.cuisines as string[]) || [],
       };
       saveProfile(profile);
