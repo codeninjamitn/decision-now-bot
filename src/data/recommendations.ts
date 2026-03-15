@@ -302,9 +302,19 @@ export const LISTEN_DATA: ListenItem[] = [
   { title: "Kashmiri Sufi Music", creator: "Various", duration: "45 min", emoji: "🎵", type: "Music", language: "Kashmiri", tags: ["Chill Music"], timeWeights: ["night"], url: "https://open.spotify.com/search/Kashmiri+Sufi+music" },
   { title: "Kashmir Stories Podcast", creator: "Kashmir Pod", duration: "30 min", emoji: "🏔️", type: "Podcast", language: "Kashmiri", tags: ["Interviews"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Kashmir+stories+podcast" },
   { title: "Kashmiri Folk Songs", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Kashmiri", tags: ["Chill Music"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Kashmiri+folk+songs" },
-  // Oriya & Assamese
+  // Marathi
+  { title: "Marathi Podcast — Katha Kathan", creator: "Marathi Podcasters", duration: "30 min", emoji: "🎙️", type: "Podcast", language: "Marathi", tags: ["Audiobooks", "Interviews"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Marathi+podcast+Katha+Kathan" },
+  { title: "Marathi Lo-fi & Chill", creator: "Various", duration: "1 hr", emoji: "🎵", type: "Music", language: "Marathi", tags: ["Chill Music", "Focus/Lo-fi"], timeWeights: ["morning", "afternoon"], url: "https://open.spotify.com/search/Marathi+lofi+chill+music" },
+  { title: "Marathi Comedy Podcast — Hasya Jatra", creator: "Marathi Fun", duration: "25 min", emoji: "😂", type: "Podcast", language: "Marathi", tags: ["Comedy Podcasts"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Marathi+comedy+podcast+Hasya+Jatra" },
+  { title: "Marathi Motivational — Yashogatha", creator: "Marathi Motivation", duration: "20 min", emoji: "💪", type: "Podcast", language: "Marathi", tags: ["Motivational"], timeWeights: ["morning"], url: "https://open.spotify.com/search/Marathi+motivational+Yashogatha" },
+  // Oriya
   { title: "Odia Podcast — Katha O Kahani", creator: "Odia Podcasters", duration: "25 min", emoji: "📖", type: "Podcast", language: "Oriya", tags: ["Audiobooks"], timeWeights: ["night"], url: "https://open.spotify.com/search/Odia+podcast+Katha+Kahani" },
+  { title: "Odia Melody Hits", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Oriya", tags: ["Chill Music"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Odia+melody+hits+playlist" },
+  { title: "Odia Morning News Brief", creator: "Odia News Pod", duration: "12 min", emoji: "📰", type: "Podcast", language: "Oriya", tags: ["News Briefings"], timeWeights: ["morning"], url: "https://open.spotify.com/search/Odia+morning+news+brief" },
+  // Assamese
   { title: "Assamese Bihu Songs", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Assamese", tags: ["Chill Music"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Assamese+Bihu+songs" },
+  { title: "Assamese Podcast — Xobdo", creator: "Assamese Podcasters", duration: "25 min", emoji: "🎙️", type: "Podcast", language: "Assamese", tags: ["Interviews", "Motivational"], timeWeights: ["morning", "afternoon"], url: "https://open.spotify.com/search/Assamese+podcast+Xobdo" },
+  { title: "Assamese Folk Music Collection", creator: "Various", duration: "1.5 hrs", emoji: "🎵", type: "Music", language: "Assamese", tags: ["Chill Music"], timeWeights: ["night"], url: "https://open.spotify.com/search/Assamese+folk+music+collection" },
 ];
 
 export function getTimeOfDay(): TimeOfDay {
