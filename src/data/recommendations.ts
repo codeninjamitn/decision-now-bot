@@ -375,15 +375,25 @@ function filterByLanguage<T extends { language: string }>(
 export function getRecommendation<T extends { tags: string[]; timeWeights: TimeOfDay[] }>(
   data: T[],
   userTags: string[],
-  preferredTime: TimeOfDay
+  preferredTime: TimeOfDay,
+  excludeTitle?: string
 ): T {
   const currentTime = getTimeOfDay();
   const timeToUse = preferredTime || currentTime;
 
-  const timeMatches = data.filter(item => item.timeWeights.includes(timeToUse));
-  const pool = timeMatches.length > 0 ? timeMatches : data;
+  let pool = data;
+  if (excludeTitle && data.length > 1) {
+    const filtered = data.filter(item => {
+      const title = 'title' in item ? (item as any).title : 'name' in item ? (item as any).name : '';
+      return title !== excludeTitle;
+    });
+    if (filtered.length > 0) pool = filtered;
+  }
 
-  const scored = pool.map(item => ({
+  const timeMatches = pool.filter(item => item.timeWeights.includes(timeToUse));
+  const finalPool = timeMatches.length > 0 ? timeMatches : pool;
+
+  const scored = finalPool.map(item => ({
     item,
     score: item.tags.filter(tag => userTags.includes(tag)).length,
   }));
@@ -398,10 +408,11 @@ export function getLanguageAwareRecommendation<T extends { tags: string[]; timeW
   data: T[],
   userTags: string[],
   preferredTime: TimeOfDay,
-  userLanguages: string[]
+  userLanguages: string[],
+  excludeTitle?: string
 ): T {
   const langFiltered = filterByLanguage(data, userLanguages);
-  return getRecommendation(langFiltered, userTags, preferredTime);
+  return getRecommendation(langFiltered, userTags, preferredTime, excludeTitle);
 }
 
 // Food recommendation with 3-layer filter
@@ -410,13 +421,20 @@ export function getFoodRecommendation(
   foodType: string,
   foodMood: string,
   cuisines: string[],
-  preferredTime: TimeOfDay
+  preferredTime: TimeOfDay,
+  excludeTitle?: string
 ): EatItem {
   // Layer 1: Veg/Non-Veg filter
   let pool = data.filter(item => {
     if (foodType === 'Both') return true;
     return item.vegNonVeg === foodType || item.vegNonVeg === 'Both';
   });
+
+  // Exclude previous recommendation
+  if (excludeTitle && pool.length > 1) {
+    const filtered = pool.filter(item => item.name !== excludeTitle);
+    if (filtered.length > 0) pool = filtered;
+  }
 
   // Layer 2: Mood filter
   const moodFiltered = pool.filter(item => item.mood.includes(foodMood as FoodMoodTag));
