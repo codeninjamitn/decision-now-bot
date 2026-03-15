@@ -207,8 +207,8 @@ export default function BuildItCTA() {
             transition={transition}
             className="bg-card rounded-2xl shadow-card p-5"
           >
-            <p className="text-sm font-medium text-foreground mb-1">We'll let you know when it's ready ✨</p>
-            <p className="text-xs text-muted-foreground mb-4">Drop your details below.</p>
+            <p className="text-sm font-medium text-foreground mb-1">Thanks for your trust & support ✨</p>
+            <p className="text-xs text-muted-foreground mb-4">Drop your details — we'll only reach out when we're ready with something great for you. No spam, no data selling, ever.</p>
 
             <div className="space-y-3">
               <input
