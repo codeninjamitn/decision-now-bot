@@ -49,6 +49,10 @@ export default function BottomNav({ active, onChange }: BottomNavProps) {
           );
         })}
       </div>
+      <div className="max-w-md mx-auto text-center pb-2 pt-1 space-y-0.5">
+        <p className="text-[9px] text-muted-foreground">No login · No credit card · Free forever</p>
+        <p className="text-[9px] text-muted-foreground">Made with ❤️ from Bangalore for the world</p>
+      </div>
     </nav>
   );
 }
