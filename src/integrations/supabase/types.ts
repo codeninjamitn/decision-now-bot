@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist_dismissals: {
+        Row: {
+          dismiss_count: number
+          fingerprint: string
+          id: string
+          last_dismissed_at: string
+        }
+        Insert: {
+          dismiss_count?: number
+          fingerprint: string
+          id?: string
+          last_dismissed_at?: string
+        }
+        Update: {
+          dismiss_count?: number
+          fingerprint?: string
+          id?: string
+          last_dismissed_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
