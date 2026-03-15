@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import type { Category, WatchItem, EatItem, ReadItem, ListenItem, TimeOfDay } from "@/data/recommendations";
 import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getLanguageAwareRecommendation, getFoodRecommendation } from "@/data/recommendations";
 import type { UserProfile } from "@/data/onboarding";
-import { addHistoryEntry, updateHistoryFeedback } from "@/data/history";
+import { addHistoryEntry, updateHistoryFeedback, loadHistory } from "@/data/history";
 import { getTimeOverride } from "@/data/timeOverride";
 import type { Friend } from "@/data/friends";
 import { blendProfiles } from "@/data/friends";
@@ -89,6 +89,7 @@ export default function RecommendationCard({ category, profile, onHome, friend }
   const [historyId, setHistoryId] = useState<string | null>(null);
   const [feedbackState, setFeedbackState] = useState<"none" | "regret-form" | "done">("none");
   const [regretNote, setRegretNote] = useState("");
+  const [wasRecommendedBefore, setWasRecommendedBefore] = useState(false);
 
   const meta = CATEGORY_META[category];
   const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
@@ -114,6 +115,9 @@ export default function RecommendationCard({ category, profile, onHome, friend }
         foodMood: category === 'eat' ? (newItem as EatItem).mood[0] : undefined,
       });
       setHistoryId(entry.id);
+      // Check if this item was recommended before (excluding the entry we just added)
+      const past = loadHistory().filter(h => h.id !== entry.id);
+      setWasRecommendedBefore(past.some(h => h.itemTitle === getItemTitle(category, newItem)));
       setLoading(false);
     }, 1200);
   };
@@ -265,6 +269,13 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   </>
                 );
               })()}
+              {wasRecommendedBefore && (
+                <div className="mt-3">
+                  <span className="px-2 py-0.5 rounded-full bg-accent text-[10px] font-medium text-accent-foreground">
+                    Recommended before
+                  </span>
+                </div>
+              )}
             </div>
 
             {feedbackState === "none" && (
