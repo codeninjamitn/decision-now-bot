@@ -430,6 +430,12 @@ export function getFoodRecommendation(
     return item.vegNonVeg === foodType || item.vegNonVeg === 'Both';
   });
 
+  // Exclude previous recommendation
+  if (excludeTitle && pool.length > 1) {
+    const filtered = pool.filter(item => item.name !== excludeTitle);
+    if (filtered.length > 0) pool = filtered;
+  }
+
   // Layer 2: Mood filter
   const moodFiltered = pool.filter(item => item.mood.includes(foodMood as FoodMoodTag));
   if (moodFiltered.length >= 3) pool = moodFiltered;

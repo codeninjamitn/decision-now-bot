@@ -122,7 +122,8 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
   const handleReroll = () => {
     setRerolled(true);
-    generate();
+    const currentTitle = item ? getItemTitle(category, item) : undefined;
+    generate(false, currentTitle);
   };
 
   const handleNoRegret = () => {
