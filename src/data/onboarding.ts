@@ -111,6 +111,9 @@ export function loadProfile(): UserProfile | null {
       parsed.foodMood = 'Comfort';
       parsed.cuisines = parsed.eatTags || ['North Indian', 'Chinese'];
     }
+    if (!parsed.foodPlatform) {
+      parsed.foodPlatform = 'any';
+    }
     return parsed;
   } catch {
     return null;
