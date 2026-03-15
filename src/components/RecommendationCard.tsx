@@ -269,6 +269,13 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   </>
                 );
               })()}
+              {wasRecommendedBefore && (
+                <div className="mt-3">
+                  <span className="px-2 py-0.5 rounded-full bg-accent text-[10px] font-medium text-accent-foreground">
+                    Recommended before
+                  </span>
+                </div>
+              )}
             </div>
 
             {feedbackState === "none" && (
