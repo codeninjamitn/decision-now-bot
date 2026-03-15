@@ -213,6 +213,11 @@ export const READ_DATA: ReadItem[] = [
   { title: "डिजिटल इंडिया का भविष्य", source: "Dainik Bhaskar", topic: "Technology", emoji: "📱", readTime: "8 min read", language: "Hindi", tags: ["Technology"], timeWeights: ["afternoon"], url: "https://www.google.com/search?q=डिजिटल+इंडिया+भविष्य+Dainik+Bhaskar" },
   { title: "सेहत के लिए योग", source: "BBC Hindi", topic: "Science", emoji: "🧘", readTime: "6 min read", language: "Hindi", tags: ["Science", "Self-improvement"], timeWeights: ["morning"], url: "https://www.bbc.com/hindi/topics/c5qvpqj1dy4t" },
   { title: "पैसों की समझ — बचत कैसे करें", source: "The Lallantop", topic: "Finance", emoji: "💰", readTime: "10 min read", language: "Hindi", tags: ["Finance"], timeWeights: ["morning", "afternoon"], url: "https://www.google.com/search?q=पैसों+की+समझ+बचत+The+Lallantop" },
+  // Marathi
+  { title: "तंत्रज्ञान आणि भविष्य", source: "Loksatta", topic: "Technology", emoji: "💻", readTime: "8 min read", language: "Marathi", tags: ["Technology"], timeWeights: ["afternoon"], url: "https://www.google.com/search?q=तंत्रज्ञान+भविष्य+Loksatta+Marathi" },
+  { title: "मराठी कथा — नवीन लेखन", source: "Loksatta", topic: "Fiction/Stories", emoji: "📖", readTime: "12 min read", language: "Marathi", tags: ["Fiction/Stories"], timeWeights: ["night"], url: "https://www.google.com/search?q=मराठी+कथा+नवीन+लेखन+Loksatta" },
+  { title: "आर्थिक नियोजन — मराठी", source: "Maharashtra Times", topic: "Finance", emoji: "💰", readTime: "7 min read", language: "Marathi", tags: ["Finance"], timeWeights: ["morning"], url: "https://www.google.com/search?q=आर्थिक+नियोजन+Maharashtra+Times+Marathi" },
+  { title: "मराठी तत्त्वज्ञान — विवेकानंद", source: "Sakal", topic: "Philosophy", emoji: "🌀", readTime: "10 min read", language: "Marathi", tags: ["Philosophy", "Self-improvement"], timeWeights: ["morning", "evening"], url: "https://www.google.com/search?q=मराठी+तत्त्वज्ञान+विवेकानंद+Sakal" },
   // Kannada
   { title: "ತಂತ್ರಜ್ಞಾನ ಮತ್ತು ಭವಿಷ್ಯ", source: "Prajavani", topic: "Technology", emoji: "💻", readTime: "7 min read", language: "Kannada", tags: ["Technology"], timeWeights: ["afternoon"], url: "https://www.google.com/search?q=ತಂತ್ರಜ್ಞಾನ+ಭವಿಷ್ಯ+Prajavani+Kannada" },
   { title: "ಕನ್ನಡ ಸಾಹಿತ್ಯ — ಹೊಸ ಕವಿತೆಗಳು", source: "Vijaya Karnataka", topic: "Culture", emoji: "📖", readTime: "10 min read", language: "Kannada", tags: ["Culture", "Fiction/Stories"], timeWeights: ["night", "evening"], url: "https://www.google.com/search?q=ಕನ್ನಡ+ಸಾಹಿತ್ಯ+ಹೊಸ+ಕವಿತೆಗಳು+Vijaya+Karnataka" },
@@ -302,9 +307,19 @@ export const LISTEN_DATA: ListenItem[] = [
   { title: "Kashmiri Sufi Music", creator: "Various", duration: "45 min", emoji: "🎵", type: "Music", language: "Kashmiri", tags: ["Chill Music"], timeWeights: ["night"], url: "https://open.spotify.com/search/Kashmiri+Sufi+music" },
   { title: "Kashmir Stories Podcast", creator: "Kashmir Pod", duration: "30 min", emoji: "🏔️", type: "Podcast", language: "Kashmiri", tags: ["Interviews"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Kashmir+stories+podcast" },
   { title: "Kashmiri Folk Songs", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Kashmiri", tags: ["Chill Music"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Kashmiri+folk+songs" },
-  // Oriya & Assamese
+  // Marathi
+  { title: "Marathi Podcast — Katha Kathan", creator: "Marathi Podcasters", duration: "30 min", emoji: "🎙️", type: "Podcast", language: "Marathi", tags: ["Audiobooks", "Interviews"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Marathi+podcast+Katha+Kathan" },
+  { title: "Marathi Lo-fi & Chill", creator: "Various", duration: "1 hr", emoji: "🎵", type: "Music", language: "Marathi", tags: ["Chill Music", "Focus/Lo-fi"], timeWeights: ["morning", "afternoon"], url: "https://open.spotify.com/search/Marathi+lofi+chill+music" },
+  { title: "Marathi Comedy Podcast — Hasya Jatra", creator: "Marathi Fun", duration: "25 min", emoji: "😂", type: "Podcast", language: "Marathi", tags: ["Comedy Podcasts"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Marathi+comedy+podcast+Hasya+Jatra" },
+  { title: "Marathi Motivational — Yashogatha", creator: "Marathi Motivation", duration: "20 min", emoji: "💪", type: "Podcast", language: "Marathi", tags: ["Motivational"], timeWeights: ["morning"], url: "https://open.spotify.com/search/Marathi+motivational+Yashogatha" },
+  // Oriya
   { title: "Odia Podcast — Katha O Kahani", creator: "Odia Podcasters", duration: "25 min", emoji: "📖", type: "Podcast", language: "Oriya", tags: ["Audiobooks"], timeWeights: ["night"], url: "https://open.spotify.com/search/Odia+podcast+Katha+Kahani" },
+  { title: "Odia Melody Hits", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Oriya", tags: ["Chill Music"], timeWeights: ["evening", "night"], url: "https://open.spotify.com/search/Odia+melody+hits+playlist" },
+  { title: "Odia Morning News Brief", creator: "Odia News Pod", duration: "12 min", emoji: "📰", type: "Podcast", language: "Oriya", tags: ["News Briefings"], timeWeights: ["morning"], url: "https://open.spotify.com/search/Odia+morning+news+brief" },
+  // Assamese
   { title: "Assamese Bihu Songs", creator: "Various", duration: "1 hr", emoji: "🎶", type: "Music", language: "Assamese", tags: ["Chill Music"], timeWeights: ["evening"], url: "https://open.spotify.com/search/Assamese+Bihu+songs" },
+  { title: "Assamese Podcast — Xobdo", creator: "Assamese Podcasters", duration: "25 min", emoji: "🎙️", type: "Podcast", language: "Assamese", tags: ["Interviews", "Motivational"], timeWeights: ["morning", "afternoon"], url: "https://open.spotify.com/search/Assamese+podcast+Xobdo" },
+  { title: "Assamese Folk Music Collection", creator: "Various", duration: "1.5 hrs", emoji: "🎵", type: "Music", language: "Assamese", tags: ["Chill Music"], timeWeights: ["night"], url: "https://open.spotify.com/search/Assamese+folk+music+collection" },
 ];
 
 export function getTimeOfDay(): TimeOfDay {
