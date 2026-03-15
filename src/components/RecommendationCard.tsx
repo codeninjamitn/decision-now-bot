@@ -44,14 +44,26 @@ function getItem(category: Category, profile: UserProfile): AnyItem {
   }
 }
 
-function getUrl(category: Category, item: AnyItem): string {
+function getSwiggyUrl(name: string): string {
+  return `https://www.swiggy.com/search?query=${encodeURIComponent(name)}`;
+}
+
+function getZomatoUrl(name: string): string {
+  return `https://www.zomato.com/search?q=${encodeURIComponent(name)}`;
+}
+
+function getUrl(category: Category, item: AnyItem, profile?: UserProfile): string {
   if (category === "watch") {
     const w = item as WatchItem;
     return w.url || `https://www.youtube.com/results?search_query=${encodeURIComponent(w.title + ' ' + w.language)}`;
   }
   if (category === "eat") {
     const e = item as EatItem;
-    return `https://www.swiggy.com/search?query=${encodeURIComponent(e.name)}`;
+    const platform = profile?.foodPlatform || 'any';
+    if (platform === 'swiggy') return getSwiggyUrl(e.name);
+    if (platform === 'zomato') return getZomatoUrl(e.name);
+    // 'any' — pick randomly for single-link contexts
+    return Math.random() > 0.5 ? getSwiggyUrl(e.name) : getZomatoUrl(e.name);
   }
   if (category === "read") {
     const r = item as ReadItem;
