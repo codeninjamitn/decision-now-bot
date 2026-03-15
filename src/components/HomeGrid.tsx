@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import type { Category } from "@/data/recommendations";
+import BuildItCTA from "@/components/BuildItCTA";
 import { loadFriends, type Friend } from "@/data/friends";
 import { getTimeOverride } from "@/data/timeOverride";
 
