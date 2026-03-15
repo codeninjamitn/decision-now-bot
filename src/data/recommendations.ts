@@ -375,15 +375,25 @@ function filterByLanguage<T extends { language: string }>(
 export function getRecommendation<T extends { tags: string[]; timeWeights: TimeOfDay[] }>(
   data: T[],
   userTags: string[],
-  preferredTime: TimeOfDay
+  preferredTime: TimeOfDay,
+  excludeTitle?: string
 ): T {
   const currentTime = getTimeOfDay();
   const timeToUse = preferredTime || currentTime;
 
-  const timeMatches = data.filter(item => item.timeWeights.includes(timeToUse));
-  const pool = timeMatches.length > 0 ? timeMatches : data;
+  let pool = data;
+  if (excludeTitle && data.length > 1) {
+    const filtered = data.filter(item => {
+      const title = 'title' in item ? (item as any).title : 'name' in item ? (item as any).name : '';
+      return title !== excludeTitle;
+    });
+    if (filtered.length > 0) pool = filtered;
+  }
 
-  const scored = pool.map(item => ({
+  const timeMatches = pool.filter(item => item.timeWeights.includes(timeToUse));
+  const finalPool = timeMatches.length > 0 ? timeMatches : pool;
+
+  const scored = finalPool.map(item => ({
     item,
     score: item.tags.filter(tag => userTags.includes(tag)).length,
   }));
