@@ -54,7 +54,15 @@ export function generateShareCode(profile: UserProfile): string {
 export function decodeShareCode(code: string): UserProfile | null {
   try {
     const decoded = JSON.parse(atob(code));
-    if (decoded.timeOfDay && decoded.watchTags && decoded.eatTags && decoded.readTags && decoded.listenTags) {
+    // Check for required fields (support both old and new profiles)
+    if (decoded.timeOfDay && (decoded.watchTags || decoded.languages)) {
+      // Ensure new fields have defaults
+      if (!decoded.languages) decoded.languages = ['English'];
+      if (!decoded.foodType) {
+        decoded.foodType = 'Both';
+        decoded.foodMood = 'Comfort';
+        decoded.cuisines = decoded.eatTags || ['North Indian', 'Chinese'];
+      }
       return decoded as UserProfile;
     }
     return null;
@@ -64,17 +72,18 @@ export function decodeShareCode(code: string): UserProfile | null {
 }
 
 export function blendProfiles(userProfile: UserProfile, friendProfile: UserProfile): UserProfile {
-  // Friend 60%, User 40% — we blend by combining tags with friend tags prioritized
   const blend = (userTags: string[], friendTags: string[]): string[] => {
-    const combined = [...new Set([...friendTags, ...userTags])];
-    return combined;
+    return [...new Set([...friendTags, ...userTags])];
   };
 
   return {
     timeOfDay: userProfile.timeOfDay,
+    languages: [...new Set([...userProfile.languages, ...friendProfile.languages])],
     watchTags: blend(userProfile.watchTags, friendProfile.watchTags),
-    eatTags: blend(userProfile.eatTags, friendProfile.eatTags),
     readTags: blend(userProfile.readTags, friendProfile.readTags),
     listenTags: blend(userProfile.listenTags, friendProfile.listenTags),
+    foodType: userProfile.foodType, // Keep user's dietary restriction
+    foodMood: friendProfile.foodMood, // Friend's mood takes precedence
+    cuisines: blend(userProfile.cuisines, friendProfile.cuisines),
   };
 }

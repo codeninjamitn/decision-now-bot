@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import type { Category, WatchItem, EatItem, ReadItem, ListenItem, TimeOfDay } from "@/data/recommendations";
-import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getRecommendation } from "@/data/recommendations";
+import { WATCH_DATA, EAT_DATA, READ_DATA, LISTEN_DATA, getLanguageAwareRecommendation, getFoodRecommendation } from "@/data/recommendations";
 import type { UserProfile } from "@/data/onboarding";
 import { addHistoryEntry, updateHistoryFeedback } from "@/data/history";
 import { getTimeOverride } from "@/data/timeOverride";
@@ -27,25 +27,40 @@ const CATEGORY_META: Record<Category, { label: string; actionLabel: string; colo
   listen: { label: "Listen", actionLabel: "Let's go →", colorClass: "category-listen" },
 };
 
+const MOOD_COLORS: Record<string, string> = {
+  Healthy: 'bg-green-500/15 text-green-600 dark:text-green-400',
+  Indulge: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  Comfort: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
+};
+
 function getItem(category: Category, profile: UserProfile): AnyItem {
   const override = getTimeOverride();
   const time = (override || profile.timeOfDay) as TimeOfDay;
   switch (category) {
-    case "watch": return getRecommendation(WATCH_DATA, profile.watchTags, time);
-    case "eat": return getRecommendation(EAT_DATA, profile.eatTags, time);
-    case "read": return getRecommendation(READ_DATA, profile.readTags, time);
-    case "listen": return getRecommendation(LISTEN_DATA, profile.listenTags, time);
+    case "watch": return getLanguageAwareRecommendation(WATCH_DATA, profile.watchTags, time, profile.languages);
+    case "eat": return getFoodRecommendation(EAT_DATA, profile.foodType, profile.foodMood, profile.cuisines, time);
+    case "read": return getLanguageAwareRecommendation(READ_DATA, profile.readTags, time, profile.languages);
+    case "listen": return getLanguageAwareRecommendation(LISTEN_DATA, profile.listenTags, time, profile.languages);
   }
 }
 
 function getUrl(category: Category, item: AnyItem): string {
-  if (category === "watch" && "url" in item) return (item as WatchItem).url;
+  if (category === "watch") {
+    const w = item as WatchItem;
+    return w.url || `https://www.youtube.com/results?search_query=${encodeURIComponent(w.title + ' ' + w.language)}`;
+  }
   if (category === "eat") {
     const e = item as EatItem;
     return `https://www.swiggy.com/search?query=${encodeURIComponent(e.name)}`;
   }
-  if (category === "read" && "url" in item) return (item as ReadItem).url;
-  if (category === "listen" && "url" in item) return (item as ListenItem).url;
+  if (category === "read") {
+    const r = item as ReadItem;
+    return r.url || `https://www.google.com/search?q=${encodeURIComponent(r.title + ' ' + r.source + ' ' + r.language)}`;
+  }
+  if (category === "listen") {
+    const l = item as ListenItem;
+    return l.url || `https://open.spotify.com/search/${encodeURIComponent(l.title)}`;
+  }
   return "#";
 }
 
@@ -64,7 +79,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
   const [regretNote, setRegretNote] = useState("");
 
   const meta = CATEGORY_META[category];
-
   const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
 
   const generate = (useOwnProfile = false) => {
@@ -84,6 +98,8 @@ export default function RecommendationCard({ category, profile, onHome, friend }
         feedback: null,
         friendId: useOwnProfile ? undefined : friend?.id,
         friendName: useOwnProfile ? undefined : friend?.name,
+        language: 'language' in newItem ? (newItem as any).language : undefined,
+        foodMood: category === 'eat' ? (newItem as EatItem).mood[0] : undefined,
       });
       setHistoryId(entry.id);
       setLoading(false);
@@ -170,7 +186,10 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   <>
                     <h2 className="text-recommendation mb-2">{w.title}</h2>
                     <p className="text-meta mb-1">{w.channel}</p>
-                    <p className="text-meta">{w.duration}</p>
+                    <div className="flex gap-2 items-center mt-2">
+                      <span className="text-meta">{w.duration}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground">{w.language}</span>
+                    </div>
                   </>
                 );
               })()}
@@ -181,8 +200,15 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   <>
                     <span className="text-4xl mb-3 block">{e.emoji}</span>
                     <h2 className="text-recommendation mb-1">{e.name}</h2>
-                    <p className="text-meta mb-1">{e.cuisine}</p>
-                    <p className="text-meta">{e.price}</p>
+                    <p className="text-meta mb-1">{e.subCuisine}</p>
+                    <div className="flex gap-2 items-center mt-2">
+                      <span className="text-meta">{e.price}</span>
+                      {e.mood.map(m => (
+                        <span key={m} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${MOOD_COLORS[m] || 'bg-muted text-muted-foreground'}`}>
+                          {m}
+                        </span>
+                      ))}
+                    </div>
                   </>
                 );
               })()}
@@ -194,10 +220,11 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                     <span className="text-3xl mb-3 block">{r.emoji}</span>
                     <h2 className="text-recommendation mb-2">{r.title}</h2>
                     <p className="text-meta mb-1">{r.source}</p>
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-2 items-center mt-2">
                       <span className="text-meta">{r.topic}</span>
                       <span className="text-meta">·</span>
                       <span className="text-meta">{r.readTime}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground">{r.language}</span>
                     </div>
                   </>
                 );
@@ -210,7 +237,11 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                     <span className="text-3xl mb-3 block">{l.emoji}</span>
                     <h2 className="text-recommendation mb-2">{l.title}</h2>
                     <p className="text-meta mb-1">{l.creator}</p>
-                    <p className="text-meta">{l.duration}</p>
+                    <div className="flex gap-2 items-center mt-2">
+                      <span className="text-meta">{l.duration}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground">{l.type}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground">{l.language}</span>
+                    </div>
                   </>
                 );
               })()}
@@ -218,7 +249,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
             {feedbackState === "none" && (
               <>
-                {/* CTA */}
                 <motion.a
                   href={getUrl(category, item)}
                   target="_blank"
@@ -229,7 +259,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   {meta.actionLabel}
                 </motion.a>
 
-                {/* Feedback buttons */}
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setFeedbackState("regret-form")}
@@ -245,7 +274,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   </button>
                 </div>
 
-                {/* Re-roll */}
                 {!rerolled && (
                   <button
                     onClick={handleReroll}
@@ -255,7 +283,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   </button>
                 )}
 
-                {/* Use own taste when friend-influenced */}
                 {friend && (
                   <button
                     onClick={handleUseOwnTaste}
@@ -299,7 +326,6 @@ export default function RecommendationCard({ category, profile, onHome, friend }
               </motion.p>
             )}
 
-            {/* Back home */}
             {feedbackState !== "done" && (
               <button
                 onClick={onHome}
