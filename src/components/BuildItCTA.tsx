@@ -1,37 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
-type Step = "question" | "form" | "thanks" | "dismissed";
+type Step = "hidden" | "question" | "form" | "thanks" | "dismissed";
+
+const DISMISS_KEY = "zr-cta-dismissed";
+const JOINED_KEY = "zr-cta-joined";
+
+function getFingerprint(): string {
+  let fp = localStorage.getItem("zr-fp");
+  if (!fp) {
+    fp = crypto.randomUUID();
+    localStorage.setItem("zr-fp", fp);
+  }
+  return fp;
+}
+
+function wasDismissedToday(): boolean {
+  const raw = localStorage.getItem(DISMISS_KEY);
+  if (!raw) return false;
+  const dismissedDate = new Date(raw).toDateString();
+  return dismissedDate === new Date().toDateString();
+}
 
 const transition = { duration: 0.3, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
 export default function BuildItCTA() {
-  const [step, setStep] = useState<Step>("question");
+  const alreadyJoined = localStorage.getItem(JOINED_KEY) === "true";
+  const [step, setStep] = useState<Step>(
+    alreadyJoined ? "hidden" : wasDismissedToday() ? "hidden" : "question"
+  );
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if (step === "dismissed" || step === "thanks") {
+  if (step === "hidden" || step === "dismissed") return null;
+
+  if (step === "thanks") {
     return (
-      <AnimatePresence>
-        {step === "thanks" && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={transition}
-            className="mt-10 text-center"
-          >
-            <p className="text-sm text-foreground font-medium">🎉 You're on the list!</p>
-            <p className="text-xs text-muted-foreground mt-1">We'll reach out when it's ready.</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transition}
+        className="mt-10 text-center"
+      >
+        <p className="text-sm text-foreground font-medium">🎉 You're on the list!</p>
+        <p className="text-xs text-muted-foreground mt-1">We'll reach out when it's ready.</p>
+      </motion.div>
     );
   }
+
+  const handleDismiss = async () => {
+    localStorage.setItem(DISMISS_KEY, new Date().toISOString());
+    setStep("dismissed");
+
+    // Track dismissal count in DB
+    const fp = getFingerprint();
+    const { data } = await supabase
+      .from("waitlist_dismissals")
+      .select("id, dismiss_count")
+      .eq("fingerprint", fp)
+      .maybeSingle();
+
+    if (data) {
+      await supabase
+        .from("waitlist_dismissals")
+        .update({ dismiss_count: data.dismiss_count + 1, last_dismissed_at: new Date().toISOString() })
+        .eq("id", data.id);
+    } else {
+      await supabase
+        .from("waitlist_dismissals")
+        .insert({ fingerprint: fp, dismiss_count: 1 });
+    }
+  };
 
   const handleSubmit = async () => {
     if (!fullName.trim() || !email.trim() || !whatsapp.trim()) {
@@ -60,6 +103,7 @@ export default function BuildItCTA() {
       setError("Something went wrong. Try again.");
       return;
     }
+    localStorage.setItem(JOINED_KEY, "true");
     setStep("thanks");
   };
 
@@ -92,7 +136,7 @@ export default function BuildItCTA() {
                 Yes, I'm in 🙌
               </button>
               <button
-                onClick={() => setStep("dismissed")}
+                onClick={handleDismiss}
                 className="flex-1 h-11 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Not now
