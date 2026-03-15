@@ -11,6 +11,11 @@ interface OnboardingProps {
 
 const FOOD_TYPES = ['Veg', 'Non-Veg', 'Both'] as const;
 const FOOD_MOODS = ['Healthy', 'Indulge', 'Comfort'] as const;
+const FOOD_PLATFORMS = [
+  { id: 'swiggy' as const, label: 'Swiggy', emoji: '🟠' },
+  { id: 'zomato' as const, label: 'Zomato', emoji: '🔴' },
+  { id: 'any' as const, label: "Doesn't matter", emoji: '🟠🔴' },
+];
 
 export default function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
