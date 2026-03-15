@@ -114,6 +114,9 @@ export default function RecommendationCard({ category, profile, onHome, friend }
         foodMood: category === 'eat' ? (newItem as EatItem).mood[0] : undefined,
       });
       setHistoryId(entry.id);
+      // Check if this item was recommended before (excluding the entry we just added)
+      const past = loadHistory().filter(h => h.id !== entry.id);
+      setWasRecommendedBefore(past.some(h => h.itemTitle === getItemTitle(category, newItem)));
       setLoading(false);
     }, 1200);
   };
