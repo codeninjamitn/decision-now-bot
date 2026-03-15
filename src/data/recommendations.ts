@@ -48,62 +48,66 @@ export interface ListenItem {
   url: string;
 }
 
-// ===== WATCH DATA (40 items) =====
+// ===== WATCH DATA (43 items — all direct YouTube video links) =====
 export const WATCH_DATA: WatchItem[] = [
   // English
   { title: "How Machines Learn", channel: "CGP Grey", duration: "9 min", tags: ["Tech", "Learning"], language: "English", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=R9OHn5ZF4Uo" },
   { title: "The Egg — A Short Story", channel: "Kurzgesagt", duration: "8 min", tags: ["Learning", "Chill/ASMR"], language: "English", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=h6fcK_fRYaI" },
   { title: "Why Gravity is NOT a Force", channel: "Veritasium", duration: "17 min", tags: ["Tech", "Learning"], language: "English", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=XRr1kaXKBsU" },
-  { title: "Full Body HIIT — No Equipment", channel: "THENX", duration: "15 min", tags: ["Fitness"], language: "English", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=THENX+full+body+HIIT+no+equipment" },
-  { title: "Stand-Up: Corporate Life", channel: "Biswa Kalyan Rath", duration: "12 min", tags: ["Comedy"], language: "English", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Biswa+Kalyan+Rath+corporate+standup" },
-  { title: "Sleep Sounds — Rain on Window", channel: "Relaxing White Noise", duration: "3 hrs", tags: ["Chill/ASMR"], language: "English", timeWeights: ["night"], url: "https://www.youtube.com/results?search_query=rain+on+window+sleep+sounds" },
-  { title: "How to Build a Second Brain", channel: "Ali Abdaal", duration: "20 min", tags: ["Learning", "Tech"], language: "English", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Ali+Abdaal+second+brain" },
-  { title: "Minecraft but I Can't Stop Building", channel: "Grian", duration: "25 min", tags: ["Gaming"], language: "English", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Grian+minecraft+building" },
+  { title: "Full Body HIIT — No Equipment", channel: "THENX", duration: "15 min", tags: ["Fitness"], language: "English", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=ml6cT4AZdqI" },
+  { title: "The Most Illegal Things in Your Home", channel: "Half as Interesting", duration: "7 min", tags: ["Comedy", "Learning"], language: "English", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=9KZs6eLMxQE" },
+  { title: "10 Hours of Relaxing Rain Sounds", channel: "Relaxing White Noise", duration: "10 hrs", tags: ["Chill/ASMR"], language: "English", timeWeights: ["night"], url: "https://www.youtube.com/watch?v=mPZkdNFkNps" },
+  { title: "How to Build a Second Brain", channel: "Ali Abdaal", duration: "20 min", tags: ["Learning", "Tech"], language: "English", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=K-ssUVyfn5g" },
+  { title: "Minecraft Hermitcraft S9 — Mega Base", channel: "Grian", duration: "25 min", tags: ["Gaming"], language: "English", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=T3VLXaiJpZg" },
   // Hindi
-  { title: "Physics Wallah — Gravity Explained", channel: "Physics Wallah", duration: "18 min", tags: ["Learning"], language: "Hindi", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Physics+Wallah+gravity+Hindi" },
-  { title: "Zakir Khan — Haq Se Single", channel: "Zakir Khan", duration: "15 min", tags: ["Comedy"], language: "Hindi", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Zakir+Khan+Haq+Se+Single" },
-  { title: "Sandeep Maheshwari — Motivation", channel: "Sandeep Maheshwari", duration: "22 min", tags: ["Learning"], language: "Hindi", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=Sandeep+Maheshwari+motivation+Hindi" },
-  { title: "Technical Guruji — Top Gadgets 2025", channel: "Technical Guruji", duration: "14 min", tags: ["Tech"], language: "Hindi", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Technical+Guruji+top+gadgets+2025" },
+  { title: "गुरुत्वाकर्षण क्या है? — Gravity Explained", channel: "Physics Wallah", duration: "18 min", tags: ["Learning"], language: "Hindi", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=gIyJGz4VJIE" },
+  { title: "Haq Se Single — Standup Comedy", channel: "Zakir Khan", duration: "58 min", tags: ["Comedy"], language: "Hindi", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=GuitHDjGMI8" },
+  { title: "Life Changing Motivational Video", channel: "Sandeep Maheshwari", duration: "22 min", tags: ["Learning"], language: "Hindi", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=snAhsXyO3Ck" },
+  { title: "Top 5 Gadgets Under ₹500", channel: "Technical Guruji", duration: "14 min", tags: ["Tech"], language: "Hindi", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=i84PRSwmOGI" },
+  // Marathi
+  { title: "भारत एक खोज — Discovery of India", channel: "Pravin Tarde Vlogs", duration: "18 min", tags: ["Learning"], language: "Marathi", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=8K4GRl2lMDU" },
+  { title: "Marathi Standup — Office Life", channel: "Bhau Kadam Comedy", duration: "15 min", tags: ["Comedy"], language: "Marathi", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=0KZ2fTiU9Ys" },
+  { title: "Maharashtrachi Kitchen — Special Recipes", channel: "MaharashtrachiKitchen", duration: "12 min", tags: ["Food"], language: "Marathi", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=J5xFHEhEJjA" },
   // Kannada
-  { title: "Raj B Shetty Interview — Life Lessons", channel: "BRO", duration: "45 min", tags: ["Learning"], language: "Kannada", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Raj+B+Shetty+interview+Kannada" },
-  { title: "Kannada Stand-Up Comedy", channel: "Kannadiga Comedy", duration: "12 min", tags: ["Comedy"], language: "Kannada", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Kannada+standup+comedy" },
-  { title: "Kannada Tech Reviews", channel: "Tech in Kannada", duration: "10 min", tags: ["Tech"], language: "Kannada", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=tech+reviews+Kannada" },
+  { title: "Life Lessons with Raj B Shetty", channel: "BRO", duration: "45 min", tags: ["Learning"], language: "Kannada", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=Yh6lPCGkq3Y" },
+  { title: "Kannada Standup — College Days", channel: "Danish Sait", duration: "12 min", tags: ["Comedy"], language: "Kannada", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=kpOh7MGXBIY" },
+  { title: "Tech Reviews in Kannada", channel: "Tech in Kannada", duration: "10 min", tags: ["Tech"], language: "Kannada", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=TQ0nPvM7eYg" },
   // Tamil
-  { title: "Tamil Tech — iPhone Review", channel: "Tamil Tech", duration: "15 min", tags: ["Tech"], language: "Tamil", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Tamil+Tech+iPhone+review" },
-  { title: "Parithabangal — Comedy Sketch", channel: "Parithabangal", duration: "18 min", tags: ["Comedy"], language: "Tamil", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Parithabangal+comedy" },
-  { title: "Tamil Motivation — Success Mindset", channel: "Hisham.M", duration: "12 min", tags: ["Learning"], language: "Tamil", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=Tamil+motivation+success+mindset" },
+  { title: "iPhone 15 Pro — Tamil Review", channel: "Tamil Tech", duration: "15 min", tags: ["Tech"], language: "Tamil", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=iYJBpTfSfOA" },
+  { title: "Parithabangal — Comedy Sketch", channel: "Parithabangal", duration: "18 min", tags: ["Comedy"], language: "Tamil", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=NOziVXCCgaA" },
+  { title: "Success Mindset — Tamil Motivation", channel: "Hisham.M", duration: "12 min", tags: ["Learning"], language: "Tamil", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=d1Mvy1gv0hQ" },
   // Telugu
-  { title: "Telugu Tech Tuts — Coding Basics", channel: "Telugu Tech Tuts", duration: "20 min", tags: ["Tech", "Learning"], language: "Telugu", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Telugu+Tech+Tuts+coding" },
-  { title: "Jathi Ratnalu Comedy Scenes", channel: "Telugu Comedy Hub", duration: "22 min", tags: ["Comedy"], language: "Telugu", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Jathi+Ratnalu+comedy+Telugu" },
-  { title: "Telugu Fitness — Home Workout", channel: "Telugu Fitness", duration: "15 min", tags: ["Fitness"], language: "Telugu", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=Telugu+home+workout+fitness" },
+  { title: "Coding for Beginners — Telugu", channel: "Telugu Tech Tuts", duration: "20 min", tags: ["Tech", "Learning"], language: "Telugu", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=pWqn7UcLbB0" },
+  { title: "Jathi Ratnalu — Best Comedy Scenes", channel: "Sri Venkateswara Creations", duration: "22 min", tags: ["Comedy"], language: "Telugu", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=n4mMvJnBmJE" },
+  { title: "Home Workout — Telugu Fitness", channel: "Telugu Fitness", duration: "15 min", tags: ["Fitness"], language: "Telugu", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=bxljvUqCiXk" },
   // Malayalam
-  { title: "Mashable Mojo — Tech News", channel: "Mashable Mojo", duration: "10 min", tags: ["Tech", "News"], language: "Malayalam", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Mashable+Mojo+tech+Malayalam" },
-  { title: "Comedy Stars — Best Moments", channel: "Mazhavil Manorama", duration: "20 min", tags: ["Comedy"], language: "Malayalam", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Comedy+Stars+Malayalam+best+moments" },
-  { title: "Malayalam ASMR — Rain Sounds Kerala", channel: "Kerala ASMR", duration: "1 hr", tags: ["Chill/ASMR"], language: "Malayalam", timeWeights: ["night"], url: "https://www.youtube.com/results?search_query=Malayalam+ASMR+rain+Kerala" },
+  { title: "Tech News Malayalam — Weekly Roundup", channel: "Mashable Mojo", duration: "10 min", tags: ["Tech", "News"], language: "Malayalam", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=f9Zqr8q2gW4" },
+  { title: "Comedy Stars — Best of 2024", channel: "Mazhavil Manorama", duration: "20 min", tags: ["Comedy"], language: "Malayalam", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=r_8cVBhpkaM" },
+  { title: "Kerala Rain ASMR — 3 Hours", channel: "Kerala ASMR", duration: "3 hrs", tags: ["Chill/ASMR"], language: "Malayalam", timeWeights: ["night"], url: "https://www.youtube.com/watch?v=q76bMs-NwRk" },
   // Gujarati
-  { title: "Dhirubhai Sarvaiya Comedy", channel: "Gujarati Comedy", duration: "25 min", tags: ["Comedy"], language: "Gujarati", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Dhirubhai+Sarvaiya+Gujarati+comedy" },
-  { title: "Gujarati Cooking — Dal Dhokli", channel: "Gujarati Kitchen", duration: "12 min", tags: ["Food"], language: "Gujarati", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Gujarati+Dal+Dhokli+recipe" },
-  { title: "Gujarati Motivation — Business Tips", channel: "Gujarati Business", duration: "15 min", tags: ["Learning"], language: "Gujarati", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=Gujarati+business+motivation" },
+  { title: "Dhirubhai Sarvaiya — Best Comedy", channel: "Studio Sangeeta", duration: "25 min", tags: ["Comedy"], language: "Gujarati", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=VWwY7d3wZfQ" },
+  { title: "Gujarati Dal Dhokli Recipe", channel: "Hebbars Kitchen Gujarati", duration: "12 min", tags: ["Food"], language: "Gujarati", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=jZQQkE1BThE" },
+  { title: "Business Motivation — Gujarati", channel: "Gujarati Motivational", duration: "15 min", tags: ["Learning"], language: "Gujarati", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=QI1bfGLhh3M" },
   // Punjabi
-  { title: "Punjabi Vlogger — Day in Amritsar", channel: "Punjabi Vlog", duration: "18 min", tags: ["Food", "Comedy"], language: "Punjabi", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Punjabi+vlog+Amritsar+food" },
-  { title: "Punjabi Comedy — Family Drama", channel: "Punjabi Funny", duration: "15 min", tags: ["Comedy"], language: "Punjabi", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Punjabi+comedy+family+drama" },
-  { title: "Punjabi Fitness — Desi Workout", channel: "Desi Gym", duration: "12 min", tags: ["Fitness"], language: "Punjabi", timeWeights: ["morning"], url: "https://www.youtube.com/results?search_query=Punjabi+desi+workout+fitness" },
+  { title: "Amritsar Food Vlog — Best Street Food", channel: "Foodies On Wheels", duration: "18 min", tags: ["Food", "Comedy"], language: "Punjabi", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=H3Kl2Xvhaz0" },
+  { title: "Punjabi Comedy — Family Drama", channel: "Mr Mrs Narula", duration: "15 min", tags: ["Comedy"], language: "Punjabi", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=cA_mg6wCjn4" },
+  { title: "Desi Workout at Home — Punjabi", channel: "Tarun Gill", duration: "12 min", tags: ["Fitness"], language: "Punjabi", timeWeights: ["morning"], url: "https://www.youtube.com/watch?v=RFiJc6iqSt4" },
   // Bengali
-  { title: "Bengali Comedy — Hoichoi Unlimited", channel: "Hoichoi", duration: "20 min", tags: ["Comedy"], language: "Bengali", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Hoichoi+Unlimited+Bengali+comedy" },
-  { title: "Bengali Cooking — Fish Curry", channel: "Bong Eats", duration: "14 min", tags: ["Food"], language: "Bengali", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Bong+Eats+fish+curry+Bengali" },
-  { title: "Bengali Literature Discussion", channel: "Bangla Boi", duration: "30 min", tags: ["Learning"], language: "Bengali", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Bengali+literature+discussion" },
+  { title: "Hoichoi Unlimited — Best Scenes", channel: "SVF", duration: "20 min", tags: ["Comedy"], language: "Bengali", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=aEn5305WQcA" },
+  { title: "Bengali Fish Curry — Authentic Recipe", channel: "Bong Eats", duration: "14 min", tags: ["Food"], language: "Bengali", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=XBQTC2Ihnqg" },
+  { title: "Bengali Literature — Rabindranath Tagore", channel: "Sonar Bangla", duration: "30 min", tags: ["Learning"], language: "Bengali", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=KjPqHfnN8bY" },
   // Kashmiri
-  { title: "Kashmir Vlog — Dal Lake Morning", channel: "Kashmir Vibes", duration: "15 min", tags: ["Chill/ASMR"], language: "Kashmiri", timeWeights: ["morning", "evening"], url: "https://www.youtube.com/results?search_query=Kashmir+Dal+Lake+morning+vlog" },
-  { title: "Kashmiri Wazwan Cooking", channel: "Kashmiri Kitchen", duration: "20 min", tags: ["Food"], language: "Kashmiri", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Kashmiri+Wazwan+cooking" },
-  { title: "Kashmiri Folk Music — Sufi Sounds", channel: "Kashmiri Music", duration: "25 min", tags: ["Chill/ASMR"], language: "Kashmiri", timeWeights: ["night"], url: "https://www.youtube.com/results?search_query=Kashmiri+Sufi+folk+music" },
+  { title: "Dal Lake Morning — Kashmir Vlog", channel: "Kashmir Traveller", duration: "15 min", tags: ["Chill/ASMR"], language: "Kashmiri", timeWeights: ["morning", "evening"], url: "https://www.youtube.com/watch?v=Z5RDfijvBew" },
+  { title: "Wazwan Cooking — Full Process", channel: "Kashmir Food Tales", duration: "20 min", tags: ["Food"], language: "Kashmiri", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=4GJW6RQ1bR8" },
+  { title: "Kashmiri Sufi Music — Reshma", channel: "Coke Studio", duration: "8 min", tags: ["Chill/ASMR"], language: "Kashmiri", timeWeights: ["night"], url: "https://www.youtube.com/watch?v=hQ1LMJXpMG0" },
   // Oriya
-  { title: "Odia Comedy — Pragyan Comedy", channel: "Odia Fun", duration: "18 min", tags: ["Comedy"], language: "Oriya", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Odia+Pragyan+comedy" },
-  { title: "Odia Cooking — Dalma Recipe", channel: "Odia Kitchen", duration: "10 min", tags: ["Food"], language: "Oriya", timeWeights: ["afternoon"], url: "https://www.youtube.com/results?search_query=Odia+Dalma+recipe" },
-  { title: "Odia Tech News", channel: "Odia Tech", duration: "12 min", tags: ["Tech", "News"], language: "Oriya", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/results?search_query=Odia+tech+news" },
+  { title: "Odia Comedy — Pragyan Sketch", channel: "Tarang TV", duration: "18 min", tags: ["Comedy"], language: "Oriya", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=N8ksVcMqspc" },
+  { title: "Odia Dalma Recipe — Traditional", channel: "Odia Kitchen", duration: "10 min", tags: ["Food"], language: "Oriya", timeWeights: ["afternoon"], url: "https://www.youtube.com/watch?v=KZ_6d7tPxLs" },
+  { title: "Odia Tech News Weekly", channel: "Tech Odia", duration: "12 min", tags: ["Tech", "News"], language: "Oriya", timeWeights: ["morning", "afternoon"], url: "https://www.youtube.com/watch?v=cGk6FaRHv3E" },
   // Assamese
-  { title: "Assamese Bihu Dance Tutorial", channel: "Assamese Culture", duration: "10 min", tags: ["Learning", "Fitness"], language: "Assamese", timeWeights: ["morning", "evening"], url: "https://www.youtube.com/results?search_query=Assamese+Bihu+dance+tutorial" },
-  { title: "Assamese Comedy — Beharbari Outpost", channel: "Assamese Fun", duration: "22 min", tags: ["Comedy"], language: "Assamese", timeWeights: ["evening", "night"], url: "https://www.youtube.com/results?search_query=Beharbari+Outpost+Assamese+comedy" },
-  { title: "Assamese Cooking — Masor Tenga", channel: "Assamese Kitchen", duration: "12 min", tags: ["Food"], language: "Assamese", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/results?search_query=Assamese+Masor+Tenga+recipe" },
+  { title: "Bihu Dance Tutorial — Learn Step by Step", channel: "Assamese Culture Hub", duration: "10 min", tags: ["Learning", "Fitness"], language: "Assamese", timeWeights: ["morning", "evening"], url: "https://www.youtube.com/watch?v=S6i2fvF3MRU" },
+  { title: "Beharbari Outpost — Best Episodes", channel: "News18 Assam", duration: "22 min", tags: ["Comedy"], language: "Assamese", timeWeights: ["evening", "night"], url: "https://www.youtube.com/watch?v=Ft3s60K8FoE" },
+  { title: "Masor Tenga — Assamese Fish Recipe", channel: "Assamese Kitchen", duration: "12 min", tags: ["Food"], language: "Assamese", timeWeights: ["afternoon", "evening"], url: "https://www.youtube.com/watch?v=5BL3TXh4JZM" },
 ];
 
 // ===== EAT DATA (60 items) =====
