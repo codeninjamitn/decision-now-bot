@@ -20,6 +20,11 @@ const TIME_OPTIONS: { id: TimeOfDay; label: string }[] = [
 
 const FOOD_TYPES: FoodType[] = ['Veg', 'Non-Veg', 'Both'];
 const FOOD_MOODS: FoodMood[] = ['Healthy', 'Indulge', 'Comfort'];
+const FOOD_PLATFORM_OPTIONS: { id: FoodPlatform; label: string }[] = [
+  { id: 'swiggy', label: 'Swiggy' },
+  { id: 'zomato', label: 'Zomato' },
+  { id: 'any', label: "Doesn't matter" },
+];
 
 interface ProfileTabProps {
   onResetProfile: () => void;
