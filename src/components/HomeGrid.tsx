@@ -81,6 +81,8 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
             </div>
           </div>
         )}
+
+        <BuildItCTA />
       </motion.div>
     </div>
   );
