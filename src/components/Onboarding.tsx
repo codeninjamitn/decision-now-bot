@@ -155,6 +155,23 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   </button>
                 ))}
               </div>
+
+              <p className="text-sm text-muted-foreground mb-3 mt-5">Where do you usually order from?</p>
+              <div className="flex gap-3">
+                {FOOD_PLATFORMS.map(fp => (
+                  <button
+                    key={fp.id}
+                    onClick={() => setFoodPlatform(fp.id)}
+                    className={`flex-1 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      foodPlatform === fp.id
+                        ? "bg-foreground text-background shadow-card"
+                        : "bg-card shadow-card hover:shadow-card-hover"
+                    }`}
+                  >
+                    {fp.emoji} {fp.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

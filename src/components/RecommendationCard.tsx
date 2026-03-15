@@ -268,15 +268,40 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
             {feedbackState === "none" && (
               <>
-                <motion.a
-                  href={getUrl(category, item)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileTap={{ scale: 0.97 }}
-                  className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
-                >
-                  {meta.actionLabel}
-                </motion.a>
+                {/* CTA — dual buttons for food "any" platform */}
+                {category === "eat" && profile.foodPlatform === "any" && item ? (
+                  <div className="flex gap-3">
+                    <motion.a
+                      href={getSwiggyUrl((item as EatItem).name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 h-14 rounded-xl bg-category-eat font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform text-foreground"
+                    >
+                      🟠 Swiggy
+                    </motion.a>
+                    <span className="flex items-center text-xs text-muted-foreground">or</span>
+                    <motion.a
+                      href={getZomatoUrl((item as EatItem).name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 h-14 rounded-xl bg-category-eat font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform text-foreground"
+                    >
+                      🔴 Zomato
+                    </motion.a>
+                  </div>
+                ) : (
+                  <motion.a
+                    href={getUrl(category, item!, profile)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileTap={{ scale: 0.97 }}
+                    className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
+                  >
+                    {meta.actionLabel}
+                  </motion.a>
+                )}
 
                 <div className="flex gap-3 mt-4">
                   <button
