@@ -9,7 +9,7 @@ export interface OnboardingQuestion {
 }
 
 export const LANGUAGE_OPTIONS = [
-  'Hindi', 'Kannada', 'Tamil', 'Telugu', 'Malayalam',
+  'Hindi', 'Marathi', 'Kannada', 'Tamil', 'Telugu', 'Malayalam',
   'Gujarati', 'Punjabi', 'Kashmiri', 'Oriya', 'Bengali', 'Assamese', 'English',
 ];
 
