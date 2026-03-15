@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
-import type { FoodType, FoodMood } from "@/data/onboarding";
+import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
 import { loadFriends, removeFriend, addFriend, generateShareCode, type Friend } from "@/data/friends";
 import { getTimeOverride, setTimeOverride, clearTimeOverride } from "@/data/timeOverride";
 import type { TimeOfDay } from "@/data/recommendations";
