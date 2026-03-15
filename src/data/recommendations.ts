@@ -421,7 +421,8 @@ export function getFoodRecommendation(
   foodType: string,
   foodMood: string,
   cuisines: string[],
-  preferredTime: TimeOfDay
+  preferredTime: TimeOfDay,
+  excludeTitle?: string
 ): EatItem {
   // Layer 1: Veg/Non-Veg filter
   let pool = data.filter(item => {
