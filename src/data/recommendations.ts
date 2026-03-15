@@ -187,6 +187,34 @@ export const EAT_DATA: EatItem[] = [
   { name: "Pad Thai", cuisine: "International", subCuisine: "Thai", emoji: "🥢", price: "₹220", vegNonVeg: "Non-Veg", mood: ["Comfort"], tags: ["Non-Veg", "Thai"], timeWeights: ["afternoon", "evening"] },
   { name: "Green Curry", cuisine: "International", subCuisine: "Thai", emoji: "🥘", price: "₹260", vegNonVeg: "Non-Veg", mood: ["Indulge", "Comfort"], tags: ["Non-Veg", "Thai"], timeWeights: ["evening"] },
   { name: "Tom Yum Soup", cuisine: "International", subCuisine: "Thai", emoji: "🍲", price: "₹190", vegNonVeg: "Non-Veg", mood: ["Healthy"], tags: ["Non-Veg", "Thai"], timeWeights: ["night"] },
+  // Oriya extras
+  { name: "Pakhala Bhata", cuisine: "Indian", subCuisine: "Oriya", emoji: "🍚", price: "₹90", vegNonVeg: "Veg", mood: ["Healthy", "Comfort"], tags: ["Veg", "Oriya"], timeWeights: ["afternoon"] },
+  { name: "Machha Besara", cuisine: "Indian", subCuisine: "Oriya", emoji: "🐟", price: "₹200", vegNonVeg: "Non-Veg", mood: ["Comfort"], tags: ["Non-Veg", "Oriya"], timeWeights: ["evening"] },
+  // Assamese extras
+  { name: "Aloo Pitika", cuisine: "Indian", subCuisine: "Assamese", emoji: "🥔", price: "₹60", vegNonVeg: "Veg", mood: ["Comfort", "Healthy"], tags: ["Veg", "Assamese"], timeWeights: ["afternoon", "evening"] },
+  { name: "Khar", cuisine: "Indian", subCuisine: "Assamese", emoji: "🥘", price: "₹120", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "Assamese"], timeWeights: ["afternoon"] },
+  { name: "Duck Curry (Haanhor Mangxo)", cuisine: "Indian", subCuisine: "Assamese", emoji: "🍖", price: "₹300", vegNonVeg: "Non-Veg", mood: ["Indulge", "Comfort"], tags: ["Non-Veg", "Assamese"], timeWeights: ["evening"] },
+  // Spanish extras
+  { name: "Paella", cuisine: "International", subCuisine: "Spanish", emoji: "🥘", price: "₹380", vegNonVeg: "Non-Veg", mood: ["Indulge", "Comfort"], tags: ["Non-Veg", "Spanish"], timeWeights: ["afternoon", "evening"] },
+  { name: "Gazpacho", cuisine: "International", subCuisine: "Spanish", emoji: "🍅", price: "₹180", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "Spanish"], timeWeights: ["afternoon"] },
+  // Continental extras
+  { name: "Quiche Lorraine", cuisine: "International", subCuisine: "Continental", emoji: "🥧", price: "₹280", vegNonVeg: "Non-Veg", mood: ["Comfort"], tags: ["Non-Veg", "Continental"], timeWeights: ["morning", "afternoon"] },
+  { name: "Cream of Mushroom Soup", cuisine: "International", subCuisine: "Continental", emoji: "🍵", price: "₹180", vegNonVeg: "Veg", mood: ["Healthy", "Comfort"], tags: ["Veg", "Continental"], timeWeights: ["evening", "night"] },
+  // Mediterranean extras
+  { name: "Shakshuka", cuisine: "International", subCuisine: "Mediterranean", emoji: "🍳", price: "₹200", vegNonVeg: "Veg", mood: ["Healthy", "Comfort"], tags: ["Veg", "Mediterranean"], timeWeights: ["morning"] },
+  { name: "Hummus & Pita", cuisine: "International", subCuisine: "Mediterranean", emoji: "🫓", price: "₹160", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "Mediterranean"], timeWeights: ["afternoon", "evening"] },
+  // Greek extras
+  { name: "Moussaka", cuisine: "International", subCuisine: "Greek", emoji: "🍆", price: "₹300", vegNonVeg: "Non-Veg", mood: ["Comfort", "Indulge"], tags: ["Non-Veg", "Greek"], timeWeights: ["evening"] },
+  { name: "Spanakopita", cuisine: "International", subCuisine: "Greek", emoji: "🥬", price: "₹220", vegNonVeg: "Veg", mood: ["Comfort"], tags: ["Veg", "Greek"], timeWeights: ["afternoon"] },
+  // Vietnamese extras
+  { name: "Bun Cha", cuisine: "International", subCuisine: "Vietnamese", emoji: "🍖", price: "₹260", vegNonVeg: "Non-Veg", mood: ["Comfort", "Indulge"], tags: ["Non-Veg", "Vietnamese"], timeWeights: ["evening"] },
+  { name: "Vietnamese Spring Rolls", cuisine: "International", subCuisine: "Vietnamese", emoji: "🥗", price: "₹180", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "Vietnamese"], timeWeights: ["afternoon"] },
+  // Burmese extras
+  { name: "Mohinga", cuisine: "International", subCuisine: "Burmese", emoji: "🍜", price: "₹200", vegNonVeg: "Non-Veg", mood: ["Comfort"], tags: ["Non-Veg", "Burmese"], timeWeights: ["morning", "afternoon"] },
+  { name: "Shan Noodles", cuisine: "International", subCuisine: "Burmese", emoji: "🍝", price: "₹190", vegNonVeg: "Non-Veg", mood: ["Comfort", "Indulge"], tags: ["Non-Veg", "Burmese"], timeWeights: ["evening"] },
+  // Malay extras
+  { name: "Laksa", cuisine: "International", subCuisine: "Malay", emoji: "🍜", price: "₹260", vegNonVeg: "Non-Veg", mood: ["Comfort", "Indulge"], tags: ["Non-Veg", "Malay"], timeWeights: ["afternoon", "evening"] },
+  { name: "Roti Canai", cuisine: "International", subCuisine: "Malay", emoji: "🫓", price: "₹120", vegNonVeg: "Veg", mood: ["Comfort"], tags: ["Veg", "Malay"], timeWeights: ["morning"] },
   // Additional items for coverage
   { name: "Poha", cuisine: "Indian", subCuisine: "Maharashtrian", emoji: "🥣", price: "₹60", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "Maharashtrian"], timeWeights: ["morning"] },
   { name: "Upma", cuisine: "Indian", subCuisine: "South Indian", emoji: "🫙", price: "₹70", vegNonVeg: "Veg", mood: ["Healthy"], tags: ["Veg", "South Indian"], timeWeights: ["morning"] },
