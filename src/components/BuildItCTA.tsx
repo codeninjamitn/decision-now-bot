@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -6,6 +6,30 @@ type Step = "hidden" | "question" | "form" | "thanks" | "dismissed";
 
 const DISMISS_KEY = "zr-cta-dismissed";
 const JOINED_KEY = "zr-cta-joined";
+
+// Country codes with flags
+const COUNTRY_CODES = [
+  { code: "+91", flag: "🇮🇳", name: "India" },
+  { code: "+1", flag: "🇺🇸", name: "US" },
+  { code: "+44", flag: "🇬🇧", name: "UK" },
+  { code: "+971", flag: "🇦🇪", name: "UAE" },
+  { code: "+65", flag: "🇸🇬", name: "Singapore" },
+  { code: "+61", flag: "🇦🇺", name: "Australia" },
+  { code: "+49", flag: "🇩🇪", name: "Germany" },
+  { code: "+33", flag: "🇫🇷", name: "France" },
+  { code: "+81", flag: "🇯🇵", name: "Japan" },
+  { code: "+86", flag: "🇨🇳", name: "China" },
+  { code: "+55", flag: "🇧🇷", name: "Brazil" },
+  { code: "+7", flag: "🇷🇺", name: "Russia" },
+  { code: "+27", flag: "🇿🇦", name: "South Africa" },
+  { code: "+82", flag: "🇰🇷", name: "South Korea" },
+  { code: "+62", flag: "🇮🇩", name: "Indonesia" },
+  { code: "+60", flag: "🇲🇾", name: "Malaysia" },
+  { code: "+63", flag: "🇵🇭", name: "Philippines" },
+  { code: "+66", flag: "🇹🇭", name: "Thailand" },
+  { code: "+234", flag: "🇳🇬", name: "Nigeria" },
+  { code: "+254", flag: "🇰🇪", name: "Kenya" },
+];
 
 function getFingerprint(): string {
   let fp = localStorage.getItem("zr-fp");
@@ -23,6 +47,22 @@ function wasDismissedToday(): boolean {
   return dismissedDate === new Date().toDateString();
 }
 
+function detectCountryFromInput(val: string): typeof COUNTRY_CODES[number] | null {
+  if (!val.startsWith("+")) return null;
+  // Try longest match first
+  const sorted = [...COUNTRY_CODES].sort((a, b) => b.code.length - a.code.length);
+  for (const c of sorted) {
+    if (val.startsWith(c.code)) return c;
+  }
+  return null;
+}
+
+const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+const isValidPhone = (countryCode: string, number: string) => {
+  const digits = number.replace(/[\s-]/g, "");
+  return /^\d{6,14}$/.test(digits) && countryCode.length >= 2;
+};
+
 const transition = { duration: 0.3, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
 export default function BuildItCTA() {
@@ -32,9 +72,19 @@ export default function BuildItCTA() {
   );
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  const selectedCountry = useMemo(
+    () => COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0],
+    [countryCode]
+  );
+
+  const emailValid = isValidEmail(email);
+  const phoneValid = isValidPhone(countryCode, phoneNumber);
+  const formValid = fullName.trim().length > 0 && emailValid && phoneValid;
 
   if (step === "hidden" || step === "dismissed") return null;
 
@@ -56,7 +106,6 @@ export default function BuildItCTA() {
     localStorage.setItem(DISMISS_KEY, new Date().toISOString());
     setStep("dismissed");
 
-    // Track dismissal count in DB
     const fp = getFingerprint();
     const { data } = await supabase
       .from("waitlist_dismissals")
@@ -77,25 +126,15 @@ export default function BuildItCTA() {
   };
 
   const handleSubmit = async () => {
-    if (!fullName.trim() || !email.trim() || !whatsapp.trim()) {
-      setError("All fields are required");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email");
-      return;
-    }
-    if (!/^\+?\d{10,15}$/.test(whatsapp.replace(/[\s-]/g, ""))) {
-      setError("Please enter a valid WhatsApp number");
-      return;
-    }
+    if (!formValid) return;
 
     setError("");
     setSubmitting(true);
+    const fullWhatsapp = `${countryCode}${phoneNumber.replace(/[\s-]/g, "")}`;
     const { error: dbError } = await supabase.from("waitlist").insert({
       full_name: fullName.trim(),
       email: email.trim(),
-      whatsapp_number: whatsapp.trim(),
+      whatsapp_number: fullWhatsapp,
     });
     setSubmitting(false);
 
@@ -105,6 +144,20 @@ export default function BuildItCTA() {
     }
     localStorage.setItem(JOINED_KEY, "true");
     setStep("thanks");
+  };
+
+  const handlePhoneInput = (val: string) => {
+    // If user pastes a full number with +, detect country and split
+    if (val.startsWith("+")) {
+      const detected = detectCountryFromInput(val);
+      if (detected) {
+        setCountryCode(detected.code);
+        setPhoneNumber(val.slice(detected.code.length).replace(/[\s-]/g, ""));
+        return;
+      }
+    }
+    // Only allow digits, spaces, dashes
+    setPhoneNumber(val.replace(/[^\d\s-]/g, ""));
   };
 
   return (
@@ -165,28 +218,67 @@ export default function BuildItCTA() {
                 onChange={e => setFullName(e.target.value)}
                 className="w-full h-11 rounded-xl bg-background border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full h-11 rounded-xl bg-background border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-              <input
-                type="tel"
-                placeholder="WhatsApp number (e.g. +91...)"
-                value={whatsapp}
-                onChange={e => setWhatsapp(e.target.value)}
-                className="w-full h-11 rounded-xl bg-background border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              />
+
+              {/* Email with inline validation */}
+              <div className="relative">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className={`w-full h-11 rounded-xl bg-background border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring ${
+                    email && !emailValid ? "border-destructive" : "border-border"
+                  }`}
+                />
+                {email && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs">
+                    {emailValid ? "✓" : "✗"}
+                  </span>
+                )}
+              </div>
+
+              {/* WhatsApp with country code selector and flag */}
+              <div className="flex gap-2">
+                <div className="relative">
+                  <select
+                    value={countryCode}
+                    onChange={e => setCountryCode(e.target.value)}
+                    className="h-11 rounded-xl bg-background border border-border pl-3 pr-8 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer"
+                    style={{ minWidth: "5.5rem" }}
+                  >
+                    {COUNTRY_CODES.map(c => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.code}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground pointer-events-none">▼</span>
+                </div>
+                <div className="relative flex-1">
+                  <input
+                    type="tel"
+                    placeholder="WhatsApp number"
+                    value={phoneNumber}
+                    onChange={e => handlePhoneInput(e.target.value)}
+                    className={`w-full h-11 rounded-xl bg-background border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring ${
+                      phoneNumber && !phoneValid ? "border-destructive" : "border-border"
+                    }`}
+                  />
+                  {phoneNumber && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs">
+                      {phoneValid ? "✓" : "✗"}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
             {error && <p className="text-xs text-destructive mt-2">{error}</p>}
 
             <button
               onClick={handleSubmit}
-              disabled={submitting}
-              className="mt-4 w-full h-11 rounded-xl bg-foreground text-background text-sm font-medium transition-transform active:scale-[0.97] disabled:opacity-50"
+              disabled={submitting || !formValid}
+              className="mt-4 w-full h-11 rounded-xl bg-foreground text-background text-sm font-medium transition-transform active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {submitting ? "Submitting..." : "Count me in →"}
             </button>
