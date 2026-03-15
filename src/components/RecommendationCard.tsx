@@ -33,14 +33,14 @@ const MOOD_COLORS: Record<string, string> = {
   Comfort: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
 };
 
-function getItem(category: Category, profile: UserProfile): AnyItem {
+function getItem(category: Category, profile: UserProfile, excludeTitle?: string): AnyItem {
   const override = getTimeOverride();
   const time = (override || profile.timeOfDay) as TimeOfDay;
   switch (category) {
-    case "watch": return getLanguageAwareRecommendation(WATCH_DATA, profile.watchTags, time, profile.languages);
-    case "eat": return getFoodRecommendation(EAT_DATA, profile.foodType, profile.foodMood, profile.cuisines, time);
-    case "read": return getLanguageAwareRecommendation(READ_DATA, profile.readTags, time, profile.languages);
-    case "listen": return getLanguageAwareRecommendation(LISTEN_DATA, profile.listenTags, time, profile.languages);
+    case "watch": return getLanguageAwareRecommendation(WATCH_DATA, profile.watchTags, time, profile.languages, excludeTitle);
+    case "eat": return getFoodRecommendation(EAT_DATA, profile.foodType, profile.foodMood, profile.cuisines, time, excludeTitle);
+    case "read": return getLanguageAwareRecommendation(READ_DATA, profile.readTags, time, profile.languages, excludeTitle);
+    case "listen": return getLanguageAwareRecommendation(LISTEN_DATA, profile.listenTags, time, profile.languages, excludeTitle);
   }
 }
 
