@@ -167,7 +167,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   // Get display value for each field
   const getFieldDisplay = (fieldId: string): string => {
     if (fieldId === 'foodPreference') {
-      return `${profile.foodType} · ${profile.foodMood}`;
+      return `${profile.foodType} · ${profile.foodMood} · ${profile.foodPlatform === 'any' ? "Any platform" : profile.foodPlatform === 'swiggy' ? 'Swiggy' : 'Zomato'}`;
     }
     if (fieldId === 'cuisines') {
       return (profile.cuisines || []).join(', ');
