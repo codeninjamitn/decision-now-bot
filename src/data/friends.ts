@@ -82,8 +82,9 @@ export function blendProfiles(userProfile: UserProfile, friendProfile: UserProfi
     watchTags: blend(userProfile.watchTags, friendProfile.watchTags),
     readTags: blend(userProfile.readTags, friendProfile.readTags),
     listenTags: blend(userProfile.listenTags, friendProfile.listenTags),
-    foodType: userProfile.foodType, // Keep user's dietary restriction
-    foodMood: friendProfile.foodMood, // Friend's mood takes precedence
+    foodType: userProfile.foodType,
+    foodMood: friendProfile.foodMood,
+    foodPlatform: userProfile.foodPlatform,
     cuisines: blend(userProfile.cuisines, friendProfile.cuisines),
   };
 }
