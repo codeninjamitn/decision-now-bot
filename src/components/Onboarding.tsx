@@ -70,7 +70,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
   const handleContinue = () => {
     if (isFoodStep) {
-      const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood! };
+      const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood!, foodPlatform: foodPlatform! };
       setAnswers(newAnswers);
       advance(newAnswers);
       return;
