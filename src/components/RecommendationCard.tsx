@@ -89,6 +89,7 @@ export default function RecommendationCard({ category, profile, onHome, friend }
   const [historyId, setHistoryId] = useState<string | null>(null);
   const [feedbackState, setFeedbackState] = useState<"none" | "regret-form" | "done">("none");
   const [regretNote, setRegretNote] = useState("");
+  const [wasRecommendedBefore, setWasRecommendedBefore] = useState(false);
 
   const meta = CATEGORY_META[category];
   const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
