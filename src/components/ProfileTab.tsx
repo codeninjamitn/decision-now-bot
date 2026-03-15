@@ -259,6 +259,14 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
                         >{fm}</button>
                       ))}
                     </div>
+                    <p className="text-xs text-muted-foreground mb-2">Ordering via</p>
+                    <div className="flex gap-2 mb-2">
+                      {FOOD_PLATFORM_OPTIONS.map(fp => (
+                        <button key={fp.id} onClick={() => setEditFoodPlatform(fp.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs transition-all ${editFoodPlatform === fp.id ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
+                        >{fp.label}</button>
+                      ))}
+                    </div>
                     <button onClick={handleEditSave} className="mt-1 text-xs text-foreground font-medium hover:underline">Save</button>
                   </motion.div>
                 )}
