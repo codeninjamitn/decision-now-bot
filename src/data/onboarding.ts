@@ -77,6 +77,7 @@ export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
 
 export type FoodType = 'Veg' | 'Non-Veg' | 'Both';
 export type FoodMood = 'Healthy' | 'Indulge' | 'Comfort';
+export type FoodPlatform = 'swiggy' | 'zomato' | 'any';
 
 export interface UserProfile {
   timeOfDay: string;
@@ -86,6 +87,7 @@ export interface UserProfile {
   listenTags: string[];
   foodType: FoodType;
   foodMood: FoodMood;
+  foodPlatform: FoodPlatform;
   cuisines: string[];
   // Legacy compat
   eatTags?: string[];
@@ -108,6 +110,9 @@ export function loadProfile(): UserProfile | null {
       parsed.foodType = 'Both';
       parsed.foodMood = 'Comfort';
       parsed.cuisines = parsed.eatTags || ['North Indian', 'Chinese'];
+    }
+    if (!parsed.foodPlatform) {
+      parsed.foodPlatform = 'any';
     }
     return parsed;
   } catch {

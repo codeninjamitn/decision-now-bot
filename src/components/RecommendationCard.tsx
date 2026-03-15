@@ -44,14 +44,26 @@ function getItem(category: Category, profile: UserProfile): AnyItem {
   }
 }
 
-function getUrl(category: Category, item: AnyItem): string {
+function getSwiggyUrl(name: string): string {
+  return `https://www.swiggy.com/search?query=${encodeURIComponent(name)}`;
+}
+
+function getZomatoUrl(name: string): string {
+  return `https://www.zomato.com/search?q=${encodeURIComponent(name)}`;
+}
+
+function getUrl(category: Category, item: AnyItem, profile?: UserProfile): string {
   if (category === "watch") {
     const w = item as WatchItem;
     return w.url || `https://www.youtube.com/results?search_query=${encodeURIComponent(w.title + ' ' + w.language)}`;
   }
   if (category === "eat") {
     const e = item as EatItem;
-    return `https://www.swiggy.com/search?query=${encodeURIComponent(e.name)}`;
+    const platform = profile?.foodPlatform || 'any';
+    if (platform === 'swiggy') return getSwiggyUrl(e.name);
+    if (platform === 'zomato') return getZomatoUrl(e.name);
+    // 'any' — pick randomly for single-link contexts
+    return Math.random() > 0.5 ? getSwiggyUrl(e.name) : getZomatoUrl(e.name);
   }
   if (category === "read") {
     const r = item as ReadItem;
@@ -196,18 +208,25 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
               {category === "eat" && (() => {
                 const e = item as EatItem;
+                const platform = profile.foodPlatform || 'any';
                 return (
                   <>
                     <span className="text-4xl mb-3 block">{e.emoji}</span>
                     <h2 className="text-recommendation mb-1">{e.name}</h2>
                     <p className="text-meta mb-1">{e.subCuisine}</p>
-                    <div className="flex gap-2 items-center mt-2">
+                    <div className="flex gap-2 items-center flex-wrap mt-2">
                       <span className="text-meta">{e.price}</span>
                       {e.mood.map(m => (
                         <span key={m} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${MOOD_COLORS[m] || 'bg-muted text-muted-foreground'}`}>
                           {m}
                         </span>
                       ))}
+                      {platform === 'swiggy' && (
+                        <span className="px-2 py-0.5 rounded-full bg-orange-500/15 text-[10px] font-medium text-orange-600 dark:text-orange-400">🟠 Swiggy</span>
+                      )}
+                      {platform === 'zomato' && (
+                        <span className="px-2 py-0.5 rounded-full bg-red-500/15 text-[10px] font-medium text-red-600 dark:text-red-400">🔴 Zomato</span>
+                      )}
                     </div>
                   </>
                 );
@@ -249,15 +268,40 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
             {feedbackState === "none" && (
               <>
-                <motion.a
-                  href={getUrl(category, item)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileTap={{ scale: 0.97 }}
-                  className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
-                >
-                  {meta.actionLabel}
-                </motion.a>
+                {/* CTA — dual buttons for food "any" platform */}
+                {category === "eat" && profile.foodPlatform === "any" && item ? (
+                  <div className="flex gap-3">
+                    <motion.a
+                      href={getSwiggyUrl((item as EatItem).name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 h-14 rounded-xl bg-category-eat font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform text-foreground"
+                    >
+                      🟠 Swiggy
+                    </motion.a>
+                    <span className="flex items-center text-xs text-muted-foreground">or</span>
+                    <motion.a
+                      href={getZomatoUrl((item as EatItem).name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 h-14 rounded-xl bg-category-eat font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform text-foreground"
+                    >
+                      🔴 Zomato
+                    </motion.a>
+                  </div>
+                ) : (
+                  <motion.a
+                    href={getUrl(category, item!, profile)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileTap={{ scale: 0.97 }}
+                    className="block h-14 w-full rounded-xl bg-foreground text-background font-medium text-sm flex items-center justify-center shadow-card active:scale-[0.97] transition-transform"
+                  >
+                    {meta.actionLabel}
+                  </motion.a>
+                )}
 
                 <div className="flex gap-3 mt-4">
                   <button

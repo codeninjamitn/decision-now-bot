@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile } from "@/data/onboarding";
-import type { FoodType, FoodMood } from "@/data/onboarding";
+import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -11,6 +11,11 @@ interface OnboardingProps {
 
 const FOOD_TYPES = ['Veg', 'Non-Veg', 'Both'] as const;
 const FOOD_MOODS = ['Healthy', 'Indulge', 'Comfort'] as const;
+const FOOD_PLATFORMS = [
+  { id: 'swiggy' as const, label: 'Swiggy', emoji: '🟠' },
+  { id: 'zomato' as const, label: 'Zomato', emoji: '🔴' },
+  { id: 'any' as const, label: "Doesn't matter", emoji: '🟠🔴' },
+];
 
 export default function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
@@ -19,6 +24,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   // Food compound step state
   const [foodType, setFoodType] = useState<FoodType | null>(null);
   const [foodMood, setFoodMood] = useState<FoodMood | null>(null);
+  const [foodPlatform, setFoodPlatform] = useState<FoodPlatform | null>(null);
 
   const question = ONBOARDING_QUESTIONS[step];
   const isLast = step === ONBOARDING_QUESTIONS.length - 1;
@@ -51,6 +57,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         listenTags: (currentAnswers.listenTags as string[]) || [],
         foodType: (currentAnswers.foodType as FoodType) || 'Both',
         foodMood: (currentAnswers.foodMood as FoodMood) || 'Comfort',
+        foodPlatform: (currentAnswers.foodPlatform as FoodPlatform) || 'any',
         cuisines: (currentAnswers.cuisines as string[]) || [],
       };
       saveProfile(profile);
@@ -63,7 +70,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
   const handleContinue = () => {
     if (isFoodStep) {
-      const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood! };
+      const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood!, foodPlatform: foodPlatform! };
       setAnswers(newAnswers);
       advance(newAnswers);
       return;
@@ -74,7 +81,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   const canContinue = (() => {
-    if (isFoodStep) return !!foodType && !!foodMood;
+    if (isFoodStep) return !!foodType && !!foodMood && !!foodPlatform;
     if (question.multiSelect) {
       if (question.minSelections) return selected.length >= question.minSelections;
       return selected.length >= (question.maxSelections || 1);
@@ -145,6 +152,23 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                     {fm === 'Indulge' && '🍕 '}
                     {fm === 'Comfort' && '🍲 '}
                     {fm}
+                  </button>
+                ))}
+              </div>
+
+              <p className="text-sm text-muted-foreground mb-3 mt-5">Where do you usually order from?</p>
+              <div className="flex gap-3">
+                {FOOD_PLATFORMS.map(fp => (
+                  <button
+                    key={fp.id}
+                    onClick={() => setFoodPlatform(fp.id)}
+                    className={`flex-1 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      foodPlatform === fp.id
+                        ? "bg-foreground text-background shadow-card"
+                        : "bg-card shadow-card hover:shadow-card-hover"
+                    }`}
+                  >
+                    {fp.emoji} {fp.label}
                   </button>
                 ))}
               </div>

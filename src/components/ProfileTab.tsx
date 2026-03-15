@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
-import type { FoodType, FoodMood } from "@/data/onboarding";
+import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
 import { loadFriends, removeFriend, addFriend, generateShareCode, type Friend } from "@/data/friends";
 import { getTimeOverride, setTimeOverride, clearTimeOverride } from "@/data/timeOverride";
 import type { TimeOfDay } from "@/data/recommendations";
@@ -20,6 +20,11 @@ const TIME_OPTIONS: { id: TimeOfDay; label: string }[] = [
 
 const FOOD_TYPES: FoodType[] = ['Veg', 'Non-Veg', 'Both'];
 const FOOD_MOODS: FoodMood[] = ['Healthy', 'Indulge', 'Comfort'];
+const FOOD_PLATFORM_OPTIONS: { id: FoodPlatform; label: string }[] = [
+  { id: 'swiggy', label: 'Swiggy' },
+  { id: 'zomato', label: 'Zomato' },
+  { id: 'any', label: "Doesn't matter" },
+];
 
 interface ProfileTabProps {
   onResetProfile: () => void;
@@ -42,6 +47,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   // Food editing state
   const [editFoodType, setEditFoodType] = useState<FoodType>('Both');
   const [editFoodMood, setEditFoodMood] = useState<FoodMood>('Comfort');
+  const [editFoodPlatform, setEditFoodPlatform] = useState<FoodPlatform>('any');
 
   useEffect(() => {
     setProfile(loadProfile());
@@ -57,6 +63,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
     if (fieldId === 'foodPreference') {
       setEditFoodType(profile.foodType);
       setEditFoodMood(profile.foodMood);
+      setEditFoodPlatform(profile.foodPlatform || 'any');
       setEditingField(fieldId);
       return;
     }
@@ -94,7 +101,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   const handleEditSave = () => {
     if (!editingField) return;
     if (editingField === 'foodPreference') {
-      const updated = { ...profile, foodType: editFoodType, foodMood: editFoodMood };
+      const updated = { ...profile, foodType: editFoodType, foodMood: editFoodMood, foodPlatform: editFoodPlatform };
       setProfile(updated);
       saveProfile(updated);
       setEditingField(null);
@@ -160,7 +167,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   // Get display value for each field
   const getFieldDisplay = (fieldId: string): string => {
     if (fieldId === 'foodPreference') {
-      return `${profile.foodType} · ${profile.foodMood}`;
+      return `${profile.foodType} · ${profile.foodMood} · ${profile.foodPlatform === 'any' ? "Any platform" : profile.foodPlatform === 'swiggy' ? 'Swiggy' : 'Zomato'}`;
     }
     if (fieldId === 'cuisines') {
       return (profile.cuisines || []).join(', ');
@@ -250,6 +257,14 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
                         <button key={fm} onClick={() => setEditFoodMood(fm)}
                           className={`px-3 py-1.5 rounded-lg text-xs transition-all ${editFoodMood === fm ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
                         >{fm}</button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">Ordering via</p>
+                    <div className="flex gap-2 mb-2">
+                      {FOOD_PLATFORM_OPTIONS.map(fp => (
+                        <button key={fp.id} onClick={() => setEditFoodPlatform(fp.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs transition-all ${editFoodPlatform === fp.id ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
+                        >{fp.label}</button>
                       ))}
                     </div>
                     <button onClick={handleEditSave} className="mt-1 text-xs text-foreground font-medium hover:underline">Save</button>
