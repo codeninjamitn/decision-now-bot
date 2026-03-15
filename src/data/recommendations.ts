@@ -408,10 +408,11 @@ export function getLanguageAwareRecommendation<T extends { tags: string[]; timeW
   data: T[],
   userTags: string[],
   preferredTime: TimeOfDay,
-  userLanguages: string[]
+  userLanguages: string[],
+  excludeTitle?: string
 ): T {
   const langFiltered = filterByLanguage(data, userLanguages);
-  return getRecommendation(langFiltered, userTags, preferredTime);
+  return getRecommendation(langFiltered, userTags, preferredTime, excludeTitle);
 }
 
 // Food recommendation with 3-layer filter
