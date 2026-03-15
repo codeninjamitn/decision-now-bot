@@ -4,7 +4,25 @@ export interface OnboardingQuestion {
   options: string[];
   multiSelect: boolean;
   maxSelections?: number;
+  minSelections?: number;
+  groups?: { label: string; options: string[] }[];
 }
+
+export const LANGUAGE_OPTIONS = [
+  'Hindi', 'Kannada', 'Tamil', 'Telugu', 'Malayalam',
+  'Gujarati', 'Punjabi', 'Kashmiri', 'Oriya', 'Bengali', 'Assamese', 'English',
+];
+
+export const CUISINE_GROUPS = [
+  {
+    label: '🇮🇳 Indian',
+    options: ['North Indian', 'South Indian', 'Maharashtrian', 'Gujarati', 'Rajasthani', 'Punjabi', 'Kashmiri', 'Bengali', 'Oriya', 'Assamese'],
+  },
+  {
+    label: '🌍 International',
+    options: ['American', 'Spanish', 'Continental', 'Mediterranean', 'Greek', 'Chinese', 'Vietnamese', 'Burmese', 'Malay', 'Italian', 'Thai'],
+  },
+];
 
 export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
   {
@@ -14,18 +32,18 @@ export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
     multiSelect: false,
   },
   {
+    id: 'languages',
+    question: 'Which languages do you enjoy consuming content in?',
+    options: LANGUAGE_OPTIONS,
+    multiSelect: true,
+    minSelections: 1,
+  },
+  {
     id: 'watchTags',
     question: 'Pick 3 YouTube categories you enjoy',
     options: ['Tech', 'Comedy', 'Learning', 'Chill/ASMR', 'Fitness', 'Food', 'News', 'Gaming'],
     multiSelect: true,
     maxSelections: 3,
-  },
-  {
-    id: 'eatTags',
-    question: 'Pick your food preferences',
-    options: ['Veg', 'Non-Veg', 'Both', 'Indian', 'Chinese', 'Italian', 'Thai'],
-    multiSelect: true,
-    maxSelections: 4,
   },
   {
     id: 'readTags',
@@ -41,14 +59,36 @@ export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
     multiSelect: true,
     maxSelections: 3,
   },
+  {
+    id: 'foodPreference',
+    question: 'Your food preference',
+    options: [], // Handled as compound step
+    multiSelect: false,
+  },
+  {
+    id: 'cuisines',
+    question: 'Pick your cuisine preferences',
+    options: [...CUISINE_GROUPS[0].options, ...CUISINE_GROUPS[1].options],
+    multiSelect: true,
+    minSelections: 2,
+    groups: CUISINE_GROUPS,
+  },
 ];
+
+export type FoodType = 'Veg' | 'Non-Veg' | 'Both';
+export type FoodMood = 'Healthy' | 'Indulge' | 'Comfort';
 
 export interface UserProfile {
   timeOfDay: string;
+  languages: string[];
   watchTags: string[];
-  eatTags: string[];
   readTags: string[];
   listenTags: string[];
+  foodType: FoodType;
+  foodMood: FoodMood;
+  cuisines: string[];
+  // Legacy compat
+  eatTags?: string[];
 }
 
 export function saveProfile(profile: UserProfile) {
@@ -59,7 +99,17 @@ export function loadProfile(): UserProfile | null {
   const raw = localStorage.getItem('zr-profile');
   if (!raw) return null;
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Migration: old profiles without languages
+    if (!parsed.languages) {
+      parsed.languages = ['English'];
+    }
+    if (!parsed.foodType) {
+      parsed.foodType = 'Both';
+      parsed.foodMood = 'Comfort';
+      parsed.cuisines = parsed.eatTags || ['North Indian', 'Chinese'];
+    }
+    return parsed;
   } catch {
     return null;
   }

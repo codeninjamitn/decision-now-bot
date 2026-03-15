@@ -10,6 +10,8 @@ export interface HistoryEntry {
   regretNote?: string;
   friendId?: string;
   friendName?: string;
+  language?: string;
+  foodMood?: string;
 }
 
 const STORAGE_KEY = "zr-history";
@@ -61,13 +63,21 @@ export function getStats() {
     evening: { watch: 0, eat: 0, read: 0, listen: 0 },
     night: { watch: 0, eat: 0, read: 0, listen: 0 },
   };
+  const byLanguage: Record<string, number> = {};
+  const byFoodMood: Record<string, number> = {};
 
   history.forEach(h => {
     byCategory[h.category]++;
     if (h.feedback === "regret") regretByCategory[h.category]++;
     if (h.feedback === "no-regret") noRegretByCategory[h.category]++;
     byTimeAndCategory[h.timeOfDay][h.category]++;
+    if (h.language) {
+      byLanguage[h.language] = (byLanguage[h.language] || 0) + 1;
+    }
+    if (h.foodMood) {
+      byFoodMood[h.foodMood] = (byFoodMood[h.foodMood] || 0) + 1;
+    }
   });
 
-  return { total, byCategory, regretByCategory, noRegretByCategory, byTimeAndCategory, history };
+  return { total, byCategory, regretByCategory, noRegretByCategory, byTimeAndCategory, byLanguage, byFoodMood, history };
 }

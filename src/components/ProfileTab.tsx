@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
-import { ONBOARDING_QUESTIONS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
+import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
+import type { FoodType, FoodMood } from "@/data/onboarding";
 import { loadFriends, removeFriend, addFriend, generateShareCode, type Friend } from "@/data/friends";
 import { getTimeOverride, setTimeOverride, clearTimeOverride } from "@/data/timeOverride";
 import type { TimeOfDay } from "@/data/recommendations";
@@ -16,6 +17,9 @@ const TIME_OPTIONS: { id: TimeOfDay; label: string }[] = [
   { id: "evening", label: "Evening" },
   { id: "night", label: "Night" },
 ];
+
+const FOOD_TYPES: FoodType[] = ['Veg', 'Non-Veg', 'Both'];
+const FOOD_MOODS: FoodMood[] = ['Healthy', 'Indulge', 'Comfort'];
 
 interface ProfileTabProps {
   onResetProfile: () => void;
@@ -34,7 +38,10 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   const [showShareCode, setShowShareCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [timeOverride, setTimeOverrideState] = useState<TimeOfDay | null>(null);
-  const [resetStep, setResetStep] = useState(0); // 0=idle, 1=confirm
+  const [resetStep, setResetStep] = useState(0);
+  // Food editing state
+  const [editFoodType, setEditFoodType] = useState<FoodType>('Both');
+  const [editFoodMood, setEditFoodMood] = useState<FoodMood>('Comfort');
 
   useEffect(() => {
     setProfile(loadProfile());
@@ -47,6 +54,17 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   const shareCode = generateShareCode(profile);
 
   const handleEditStart = (fieldId: string) => {
+    if (fieldId === 'foodPreference') {
+      setEditFoodType(profile.foodType);
+      setEditFoodMood(profile.foodMood);
+      setEditingField(fieldId);
+      return;
+    }
+    if (fieldId === 'cuisines') {
+      setEditSelected(profile.cuisines || []);
+      setEditingField(fieldId);
+      return;
+    }
     const question = ONBOARDING_QUESTIONS.find(q => q.id === fieldId);
     if (!question) return;
     const current = (profile as any)[fieldId];
@@ -75,6 +93,13 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
 
   const handleEditSave = () => {
     if (!editingField) return;
+    if (editingField === 'foodPreference') {
+      const updated = { ...profile, foodType: editFoodType, foodMood: editFoodMood };
+      setProfile(updated);
+      saveProfile(updated);
+      setEditingField(null);
+      return;
+    }
     const updated = { ...profile, [editingField]: editSelected };
     setProfile(updated);
     saveProfile(updated);
@@ -132,6 +157,18 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
     return qr.createDataURL(4, 0);
   };
 
+  // Get display value for each field
+  const getFieldDisplay = (fieldId: string): string => {
+    if (fieldId === 'foodPreference') {
+      return `${profile.foodType} · ${profile.foodMood}`;
+    }
+    if (fieldId === 'cuisines') {
+      return (profile.cuisines || []).join(', ');
+    }
+    const value = (profile as any)[fieldId];
+    return Array.isArray(value) ? value.join(', ') : value;
+  };
+
   return (
     <div className="min-h-screen max-w-md mx-auto px-6 pt-12 pb-24">
       <motion.div
@@ -183,8 +220,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
         <section className="mb-8">
           <p className="text-meta mb-4">My Taste</p>
           {ONBOARDING_QUESTIONS.map(q => {
-            const value = (profile as any)[q.id];
-            const display = Array.isArray(value) ? value.join(", ") : value;
+            const display = getFieldDisplay(q.id);
             const isEditing = editingField === q.id;
 
             return (
@@ -198,34 +234,59 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
                 {!isEditing && (
                   <p className="text-xs text-muted-foreground mt-1">{display}</p>
                 )}
-                {isEditing && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="mt-2"
-                  >
+                {isEditing && q.id === 'foodPreference' && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+                    <p className="text-xs text-muted-foreground mb-2">Diet type</p>
+                    <div className="flex gap-2 mb-3">
+                      {FOOD_TYPES.map(ft => (
+                        <button key={ft} onClick={() => setEditFoodType(ft)}
+                          className={`px-3 py-1.5 rounded-lg text-xs transition-all ${editFoodType === ft ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
+                        >{ft}</button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">Mood</p>
+                    <div className="flex gap-2 mb-2">
+                      {FOOD_MOODS.map(fm => (
+                        <button key={fm} onClick={() => setEditFoodMood(fm)}
+                          className={`px-3 py-1.5 rounded-lg text-xs transition-all ${editFoodMood === fm ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
+                        >{fm}</button>
+                      ))}
+                    </div>
+                    <button onClick={handleEditSave} className="mt-1 text-xs text-foreground font-medium hover:underline">Save</button>
+                  </motion.div>
+                )}
+                {isEditing && q.id === 'cuisines' && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+                    {CUISINE_GROUPS.map(group => (
+                      <div key={group.label} className="mb-3">
+                        <p className="text-xs font-medium text-foreground mb-1">{group.label}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {group.options.map(opt => (
+                            <button key={opt}
+                              onClick={() => setEditSelected(prev => prev.includes(opt) ? prev.filter(o => o !== opt) : [...prev, opt])}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] transition-all ${editSelected.includes(opt) ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"}`}
+                            >{opt}</button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    <button onClick={handleEditSave} className="mt-1 text-xs text-foreground font-medium hover:underline">Save</button>
+                  </motion.div>
+                )}
+                {isEditing && q.id !== 'foodPreference' && q.id !== 'cuisines' && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
                     <div className="flex flex-wrap gap-2">
                       {q.options.map(opt => (
-                        <button
-                          key={opt}
-                          onClick={() => handleEditSelect(opt)}
+                        <button key={opt} onClick={() => handleEditSelect(opt)}
                           className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
                             editSelected.includes(opt) || editSelected.includes(opt.toLowerCase())
-                              ? "bg-foreground text-background"
-                              : "bg-card shadow-card text-foreground"
+                              ? "bg-foreground text-background" : "bg-card shadow-card text-foreground"
                           }`}
-                        >
-                          {opt}
-                        </button>
+                        >{opt}</button>
                       ))}
                     </div>
                     {q.multiSelect && (
-                      <button
-                        onClick={handleEditSave}
-                        className="mt-2 text-xs text-foreground font-medium hover:underline"
-                      >
-                        Save
-                      </button>
+                      <button onClick={handleEditSave} className="mt-2 text-xs text-foreground font-medium hover:underline">Save</button>
                     )}
                   </motion.div>
                 )}
@@ -237,7 +298,6 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
         {/* Friends */}
         <section className="mb-8">
           <p className="text-meta mb-4">Friends</p>
-
           {friends.map(f => (
             <div key={f.id} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
@@ -251,68 +311,33 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
               </button>
             </div>
           ))}
-
           {friends.length < 5 && !showAddFriend && (
-            <button
-              onClick={() => setShowAddFriend(true)}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2"
-            >
+            <button onClick={() => setShowAddFriend(true)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2">
               <UserPlus className="w-4 h-4" /> Add a Friend
             </button>
           )}
-
           {showAddFriend && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-3 p-4 bg-card rounded-xl shadow-card"
-            >
-              <input
-                value={friendName}
-                onChange={e => setFriendName(e.target.value)}
-                placeholder="Friend's name"
-                className="w-full bg-transparent border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground mb-2 focus:outline-none focus:ring-1 focus:ring-ring"
-              />
-              <textarea
-                value={friendCode}
-                onChange={e => setFriendCode(e.target.value)}
-                placeholder="Paste their share code"
-                className="w-full bg-transparent border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground resize-none h-16 mb-2 focus:outline-none focus:ring-1 focus:ring-ring"
-              />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 p-4 bg-card rounded-xl shadow-card">
+              <input value={friendName} onChange={e => setFriendName(e.target.value)} placeholder="Friend's name"
+                className="w-full bg-transparent border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground mb-2 focus:outline-none focus:ring-1 focus:ring-ring" />
+              <textarea value={friendCode} onChange={e => setFriendCode(e.target.value)} placeholder="Paste their share code"
+                className="w-full bg-transparent border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground resize-none h-16 mb-2 focus:outline-none focus:ring-1 focus:ring-ring" />
               {friendError && <p className="text-xs text-destructive mb-2">{friendError}</p>}
               <div className="flex gap-2">
-                <button onClick={handleAddFriend} className="flex-1 py-2 bg-foreground text-background rounded-lg text-sm font-medium">
-                  Add
-                </button>
-                <button onClick={() => { setShowAddFriend(false); setFriendError(""); }} className="flex-1 py-2 text-muted-foreground text-sm">
-                  Cancel
-                </button>
+                <button onClick={handleAddFriend} className="flex-1 py-2 bg-foreground text-background rounded-lg text-sm font-medium">Add</button>
+                <button onClick={() => { setShowAddFriend(false); setFriendError(""); }} className="flex-1 py-2 text-muted-foreground text-sm">Cancel</button>
               </div>
             </motion.div>
           )}
-
-          {/* Share code */}
           <div className="mt-4">
-            <button
-              onClick={() => setShowShareCode(!showShareCode)}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <button onClick={() => setShowShareCode(!showShareCode)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <Copy className="w-4 h-4" /> Share my taste
             </button>
             {showShareCode && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-3 p-4 bg-card rounded-xl shadow-card"
-              >
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3 p-4 bg-card rounded-xl shadow-card">
                 <p className="text-xs text-muted-foreground mb-2">Your share code:</p>
-                <div className="bg-muted rounded-lg p-2 mb-3 break-all text-xs text-foreground font-mono-app max-h-20 overflow-y-auto">
-                  {shareCode}
-                </div>
-                <button
-                  onClick={handleCopy}
-                  className="w-full py-2 bg-foreground text-background rounded-lg text-sm font-medium mb-3"
-                >
+                <div className="bg-muted rounded-lg p-2 mb-3 break-all text-xs text-foreground font-mono-app max-h-20 overflow-y-auto">{shareCode}</div>
+                <button onClick={handleCopy} className="w-full py-2 bg-foreground text-background rounded-lg text-sm font-medium mb-3">
                   {copied ? "Copied!" : "Copy code"}
                 </button>
                 <div className="flex justify-center">
@@ -326,27 +351,14 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
         {/* Danger Zone */}
         <section className="border-t border-border pt-6">
           <p className="text-meta mb-4 text-destructive">Danger Zone</p>
-
           {timeOverride && (
-            <button
-              onClick={handleClearOverride}
-              className="w-full text-left text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"
-            >
+            <button onClick={handleClearOverride} className="w-full text-left text-sm text-muted-foreground hover:text-foreground py-2 transition-colors">
               Clear session override
             </button>
           )}
-
-          <button
-            onClick={handleFullReset}
-            className={`w-full text-left text-sm py-2 transition-colors ${
-              resetStep === 1
-                ? "text-destructive font-medium"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {resetStep === 1
-              ? "This will delete everything. Tap again to confirm."
-              : "Reset my entire profile"}
+          <button onClick={handleFullReset}
+            className={`w-full text-left text-sm py-2 transition-colors ${resetStep === 1 ? "text-destructive font-medium" : "text-muted-foreground hover:text-foreground"}`}>
+            {resetStep === 1 ? "This will delete everything. Tap again to confirm." : "Reset my entire profile"}
           </button>
         </section>
       </motion.div>

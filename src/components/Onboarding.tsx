@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ONBOARDING_QUESTIONS, UserProfile, saveProfile } from "@/data/onboarding";
+import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile } from "@/data/onboarding";
+import type { FoodType, FoodMood } from "@/data/onboarding";
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -8,15 +9,24 @@ interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
 }
 
+const FOOD_TYPES = ['Veg', 'Non-Veg', 'Both'] as const;
+const FOOD_MOODS = ['Healthy', 'Indulge', 'Comfort'] as const;
+
 export default function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [selected, setSelected] = useState<string[]>([]);
+  // Food compound step state
+  const [foodType, setFoodType] = useState<FoodType | null>(null);
+  const [foodMood, setFoodMood] = useState<FoodMood | null>(null);
 
   const question = ONBOARDING_QUESTIONS[step];
   const isLast = step === ONBOARDING_QUESTIONS.length - 1;
+  const isFoodStep = question.id === 'foodPreference';
+  const isCuisineStep = question.id === 'cuisines';
 
   const handleSelect = (option: string) => {
+    if (isFoodStep) return; // Handled separately
     if (!question.multiSelect) {
       const newAnswers = { ...answers, [question.id]: option };
       setAnswers(newAnswers);
@@ -35,10 +45,13 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
     if (isLast) {
       const profile: UserProfile = {
         timeOfDay: (currentAnswers.timeOfDay as string || 'evening').toLowerCase(),
+        languages: (currentAnswers.languages as string[]) || ['English'],
         watchTags: (currentAnswers.watchTags as string[]) || [],
-        eatTags: (currentAnswers.eatTags as string[]) || [],
         readTags: (currentAnswers.readTags as string[]) || [],
         listenTags: (currentAnswers.listenTags as string[]) || [],
+        foodType: (currentAnswers.foodType as FoodType) || 'Both',
+        foodMood: (currentAnswers.foodMood as FoodMood) || 'Comfort',
+        cuisines: (currentAnswers.cuisines as string[]) || [],
       };
       saveProfile(profile);
       onComplete(profile);
@@ -49,14 +62,25 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   const handleContinue = () => {
+    if (isFoodStep) {
+      const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood! };
+      setAnswers(newAnswers);
+      advance(newAnswers);
+      return;
+    }
     const newAnswers = { ...answers, [question.id]: selected };
     setAnswers(newAnswers);
     advance(newAnswers);
   };
 
-  const canContinue = question.multiSelect
-    ? selected.length >= (question.maxSelections || 1)
-    : false;
+  const canContinue = (() => {
+    if (isFoodStep) return !!foodType && !!foodMood;
+    if (question.multiSelect) {
+      if (question.minSelections) return selected.length >= question.minSelections;
+      return selected.length >= (question.maxSelections || 1);
+    }
+    return false;
+  })();
 
   return (
     <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6">
@@ -85,30 +109,102 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           </p>
           <h2 className="text-headline mb-8">{question.question}</h2>
 
-          <div className="grid grid-cols-2 gap-3">
-            {question.options.map(option => {
-              const isSelected = question.multiSelect
-                ? selected.includes(option)
-                : answers[question.id] === option;
+          {/* Food compound step */}
+          {isFoodStep && (
+            <div>
+              <p className="text-sm text-muted-foreground mb-3">Are you...</p>
+              <div className="flex gap-3 mb-6">
+                {FOOD_TYPES.map(ft => (
+                  <button
+                    key={ft}
+                    onClick={() => setFoodType(ft)}
+                    className={`flex-1 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      foodType === ft
+                        ? "bg-foreground text-background shadow-card"
+                        : "bg-card shadow-card hover:shadow-card-hover"
+                    }`}
+                  >
+                    {ft}
+                  </button>
+                ))}
+              </div>
 
-              return (
-                <motion.button
-                  key={option}
-                  onClick={() => handleSelect(option)}
-                  whileTap={{ scale: 0.97 }}
-                  className={`px-4 py-3.5 rounded-lg text-sm font-medium text-left transition-all duration-200 ${
-                    isSelected
-                      ? "bg-foreground text-background shadow-card"
-                      : "bg-card shadow-card hover:shadow-card-hover"
-                  }`}
-                >
-                  {option}
-                </motion.button>
-              );
-            })}
-          </div>
+              <p className="text-sm text-muted-foreground mb-3">What's your mood for food?</p>
+              <div className="flex gap-3">
+                {FOOD_MOODS.map(fm => (
+                  <button
+                    key={fm}
+                    onClick={() => setFoodMood(fm)}
+                    className={`flex-1 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      foodMood === fm
+                        ? "bg-foreground text-background shadow-card"
+                        : "bg-card shadow-card hover:shadow-card-hover"
+                    }`}
+                  >
+                    {fm === 'Healthy' && '🥗 '}
+                    {fm === 'Indulge' && '🍕 '}
+                    {fm === 'Comfort' && '🍲 '}
+                    {fm}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-          {question.multiSelect && (
+          {/* Cuisine step with groups */}
+          {isCuisineStep && question.groups && (
+            <div>
+              {question.groups.map(group => (
+                <div key={group.label} className="mb-5">
+                  <p className="text-sm font-medium text-foreground mb-2">{group.label}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {group.options.map(option => (
+                      <button
+                        key={option}
+                        onClick={() => handleSelect(option)}
+                        className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
+                          selected.includes(option)
+                            ? "bg-foreground text-background shadow-card"
+                            : "bg-card shadow-card hover:shadow-card-hover"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Standard options grid */}
+          {!isFoodStep && !isCuisineStep && (
+            <div className="grid grid-cols-2 gap-3">
+              {question.options.map(option => {
+                const isSelected = question.multiSelect
+                  ? selected.includes(option)
+                  : answers[question.id] === option;
+
+                return (
+                  <motion.button
+                    key={option}
+                    onClick={() => handleSelect(option)}
+                    whileTap={{ scale: 0.97 }}
+                    className={`px-4 py-3.5 rounded-lg text-sm font-medium text-left transition-all duration-200 ${
+                      isSelected
+                        ? "bg-foreground text-background shadow-card"
+                        : "bg-card shadow-card hover:shadow-card-hover"
+                    }`}
+                  >
+                    {option}
+                  </motion.button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Continue button for multi-select & food step */}
+          {(question.multiSelect || isFoodStep) && (
             <motion.button
               onClick={handleContinue}
               disabled={!canContinue}

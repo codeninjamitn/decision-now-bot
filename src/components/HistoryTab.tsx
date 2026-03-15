@@ -12,6 +12,12 @@ const CATEGORY_LABELS: Record<Category, { emoji: string; label: string; colorCla
   listen: { emoji: "🎧", label: "Listen", colorClass: "category-listen" },
 };
 
+const MOOD_COLORS: Record<string, string> = {
+  Healthy: 'text-green-600 dark:text-green-400',
+  Indulge: 'text-amber-600 dark:text-amber-400',
+  Comfort: 'text-orange-600 dark:text-orange-400',
+};
+
 export default function HistoryTab() {
   const [stats, setStats] = useState(getStats());
 
@@ -29,6 +35,13 @@ export default function HistoryTab() {
       </div>
     );
   }
+
+  const topLanguages = Object.entries(stats.byLanguage)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const foodMoods = Object.entries(stats.byFoodMood)
+    .sort((a, b) => b[1] - a[1]);
 
   return (
     <div className="min-h-screen max-w-md mx-auto px-6 pt-12 pb-24">
@@ -68,7 +81,33 @@ export default function HistoryTab() {
           </div>
         </section>
 
-        {/* Top performing */}
+        {/* Language breakdown */}
+        {topLanguages.length > 0 && (
+          <section className="mb-8">
+            <p className="text-meta mb-4">Top Languages</p>
+            {topLanguages.map(([lang, count]) => (
+              <div key={lang} className="flex items-center justify-between py-1.5">
+                <span className="text-sm text-foreground">{lang}</span>
+                <span className="text-xs text-muted-foreground">{count} picks</span>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* Food mood breakdown */}
+        {foodMoods.length > 0 && (
+          <section className="mb-8">
+            <p className="text-meta mb-4">Food Mood</p>
+            {foodMoods.map(([mood, count]) => (
+              <div key={mood} className="flex items-center justify-between py-1.5">
+                <span className={`text-sm font-medium ${MOOD_COLORS[mood] || 'text-foreground'}`}>{mood}</span>
+                <span className="text-xs text-muted-foreground">{count} picks</span>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* Best performing */}
         <section className="mb-8">
           <p className="text-meta mb-4">Best Performing</p>
           {categories
@@ -123,6 +162,7 @@ export default function HistoryTab() {
                   <p className="text-[10px] text-muted-foreground">
                     {new Date(entry.timestamp).toLocaleDateString()}
                     {entry.friendName && ` · via ${entry.friendName}`}
+                    {entry.language && ` · ${entry.language}`}
                   </p>
                 </div>
               </div>
