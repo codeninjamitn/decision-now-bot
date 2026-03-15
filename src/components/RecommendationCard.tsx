@@ -93,13 +93,13 @@ export default function RecommendationCard({ category, profile, onHome, friend }
   const meta = CATEGORY_META[category];
   const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
 
-  const generate = (useOwnProfile = false) => {
+  const generate = (useOwnProfile = false, excludeTitle?: string) => {
     setLoading(true);
     setFeedbackState("none");
     setRegretNote("");
     const p = useOwnProfile ? profile : effectiveProfile;
     setTimeout(() => {
-      const newItem = getItem(category, p);
+      const newItem = getItem(category, p, excludeTitle);
       setItem(newItem);
       const override = getTimeOverride();
       const time = (override || profile.timeOfDay) as TimeOfDay;
