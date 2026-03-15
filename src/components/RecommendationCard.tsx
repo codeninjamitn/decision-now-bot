@@ -208,18 +208,25 @@ export default function RecommendationCard({ category, profile, onHome, friend }
 
               {category === "eat" && (() => {
                 const e = item as EatItem;
+                const platform = profile.foodPlatform || 'any';
                 return (
                   <>
                     <span className="text-4xl mb-3 block">{e.emoji}</span>
                     <h2 className="text-recommendation mb-1">{e.name}</h2>
                     <p className="text-meta mb-1">{e.subCuisine}</p>
-                    <div className="flex gap-2 items-center mt-2">
+                    <div className="flex gap-2 items-center flex-wrap mt-2">
                       <span className="text-meta">{e.price}</span>
                       {e.mood.map(m => (
                         <span key={m} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${MOOD_COLORS[m] || 'bg-muted text-muted-foreground'}`}>
                           {m}
                         </span>
                       ))}
+                      {platform === 'swiggy' && (
+                        <span className="px-2 py-0.5 rounded-full bg-orange-500/15 text-[10px] font-medium text-orange-600 dark:text-orange-400">🟠 Swiggy</span>
+                      )}
+                      {platform === 'zomato' && (
+                        <span className="px-2 py-0.5 rounded-full bg-red-500/15 text-[10px] font-medium text-red-600 dark:text-red-400">🔴 Zomato</span>
+                      )}
                     </div>
                   </>
                 );
