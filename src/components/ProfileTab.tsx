@@ -101,7 +101,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   const handleEditSave = () => {
     if (!editingField) return;
     if (editingField === 'foodPreference') {
-      const updated = { ...profile, foodType: editFoodType, foodMood: editFoodMood };
+      const updated = { ...profile, foodType: editFoodType, foodMood: editFoodMood, foodPlatform: editFoodPlatform };
       setProfile(updated);
       saveProfile(updated);
       setEditingField(null);
