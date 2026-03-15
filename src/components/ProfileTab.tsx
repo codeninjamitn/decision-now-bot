@@ -63,6 +63,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
     if (fieldId === 'foodPreference') {
       setEditFoodType(profile.foodType);
       setEditFoodMood(profile.foodMood);
+      setEditFoodPlatform(profile.foodPlatform || 'any');
       setEditingField(fieldId);
       return;
     }
