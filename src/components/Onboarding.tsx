@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile } from "@/data/onboarding";
-import type { FoodType, FoodMood } from "@/data/onboarding";
+import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
