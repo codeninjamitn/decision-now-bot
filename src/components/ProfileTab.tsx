@@ -47,6 +47,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   // Food editing state
   const [editFoodType, setEditFoodType] = useState<FoodType>('Both');
   const [editFoodMood, setEditFoodMood] = useState<FoodMood>('Comfort');
+  const [editFoodPlatform, setEditFoodPlatform] = useState<FoodPlatform>('any');
 
   useEffect(() => {
     setProfile(loadProfile());
