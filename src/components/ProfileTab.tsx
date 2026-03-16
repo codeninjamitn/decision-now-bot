@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
+import { Monitor, Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
 import QRCode from "react-qr-code";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
 import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
