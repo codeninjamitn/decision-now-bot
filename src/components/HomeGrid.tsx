@@ -80,7 +80,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
                 onClick={() => onSelect(id)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className={`aspect-[4/3] rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-4 ${cat.bgClass}`}
+                className={`aspect-[5/3] rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-4 ${cat.bgClass}`}
               >
                 <span className="text-3xl mb-2">{cat.emoji}</span>
                 <span className="text-sm font-medium text-foreground">{cat.label}</span>
