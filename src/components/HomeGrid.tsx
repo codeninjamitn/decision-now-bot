@@ -55,7 +55,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pb-20">
+    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pt-8 pb-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
