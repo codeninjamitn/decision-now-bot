@@ -94,10 +94,10 @@ export default function BuildItCTA() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transition}
-        className="mt-10 text-center"
+        className="mt-8 bg-card rounded-2xl shadow-card p-5 text-center"
       >
-        <p className="text-sm text-foreground font-medium">🎉 You're on the list!</p>
-        <p className="text-xs text-muted-foreground mt-1">We'll reach out when it's ready.</p>
+        <p className="text-sm text-foreground font-medium">Thanks for your support — it means a lot to us 🙏</p>
+        <p className="text-xs text-muted-foreground mt-1">We'll only reach out when something great is ready.</p>
       </motion.div>
     );
   }
@@ -165,7 +165,7 @@ export default function BuildItCTA() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ ...transition, delay: 0.3 }}
-      className="mt-10"
+      className="mt-8"
     >
       <AnimatePresence mode="wait">
         {step === "question" && (

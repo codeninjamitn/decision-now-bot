@@ -55,7 +55,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pb-20">
+    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pt-8 pb-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -80,7 +80,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
                 onClick={() => onSelect(id)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className={`aspect-square rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-5 ${cat.bgClass}`}
+                className={`aspect-[4/3] rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-4 ${cat.bgClass}`}
               >
                 <span className="text-3xl mb-2">{cat.emoji}</span>
                 <span className="text-sm font-medium text-foreground">{cat.label}</span>
