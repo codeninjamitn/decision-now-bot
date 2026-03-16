@@ -68,7 +68,8 @@ const Index = () => {
 
   useEffect(() => {
     const theme = localStorage.getItem("zr-theme");
-    if (theme === "dark") document.documentElement.classList.add("dark");
+    const isDark = theme === "dark" || (theme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
   const handleOnboardingComplete = (p: UserProfile) => {
