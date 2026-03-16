@@ -47,16 +47,65 @@ export function removeFriend(id: string) {
   saveFriends(friends);
 }
 
+// Compact encoding: t=timeOfDay(0-3), l=lang indices, w=watch indices, r=read indices, s=listen indices, f=foodType(0-2), m=foodMood(0-2), p=platform(0-2), c=cuisine indices
+// Uses short delimited format instead of full JSON to keep QR scannable
+
+const TIME_KEYS = ['morning', 'afternoon', 'evening', 'night'];
+const LANG_KEYS = ['Assamese','Bengali','English','Gujarati','Hindi','Kannada','Kashmiri','Malayalam','Marathi','Oriya','Punjabi','Tamil','Telugu'];
+const WATCH_KEYS = ['Chill/ASMR','Comedy','Fitness','Food','Gaming','Learning','News','Tech'];
+const READ_KEYS = ['Culture','Design','Fiction/Stories','Finance','Philosophy','Science','Self-improvement','Technology'];
+const LISTEN_KEYS = ['Audiobooks','Chill Music','Comedy Podcasts','Focus/Lo-fi','Interviews','Motivational','News Briefings','True Crime'];
+const FOOD_TYPE_KEYS = ['Veg','Non-Veg','Both'];
+const FOOD_MOOD_KEYS = ['Healthy','Indulge','Comfort'];
+const PLATFORM_KEYS = ['swiggy','zomato','any'];
+const CUISINE_KEYS = ['Assamese','Bengali','Gujarati','Kashmiri','Maharashtrian','North Indian','Oriya','Punjabi','Rajasthani','South Indian','American','Burmese','Chinese','Continental','Greek','Italian','Malay','Mediterranean','Spanish','Thai','Vietnamese'];
+
+function indicesToStr(items: string[], keys: string[]): string {
+  return items.map(i => keys.indexOf(i)).filter(i => i >= 0).join('.');
+}
+
+function strToItems(s: string, keys: string[]): string[] {
+  if (!s) return [];
+  return s.split('.').map(Number).filter(i => i >= 0 && i < keys.length).map(i => keys[i]);
+}
+
 export function generateShareCode(profile: UserProfile): string {
-  return btoa(JSON.stringify(profile));
+  const parts = [
+    TIME_KEYS.indexOf(profile.timeOfDay),
+    indicesToStr(profile.languages, LANG_KEYS),
+    indicesToStr(profile.watchTags, WATCH_KEYS),
+    indicesToStr(profile.readTags, READ_KEYS),
+    indicesToStr(profile.listenTags, LISTEN_KEYS),
+    FOOD_TYPE_KEYS.indexOf(profile.foodType),
+    FOOD_MOOD_KEYS.indexOf(profile.foodMood),
+    PLATFORM_KEYS.indexOf(profile.foodPlatform || 'any'),
+    indicesToStr(profile.cuisines, CUISINE_KEYS),
+  ];
+  return btoa(parts.join(','));
 }
 
 export function decodeShareCode(code: string): UserProfile | null {
   try {
-    const decoded = JSON.parse(atob(code));
-    // Check for required fields (support both old and new profiles)
+    const raw = atob(code);
+    // Try new compact format first
+    const parts = raw.split(',');
+    if (parts.length === 9) {
+      const timeIdx = Number(parts[0]);
+      return {
+        timeOfDay: TIME_KEYS[timeIdx] || 'evening',
+        languages: strToItems(parts[1], LANG_KEYS).length ? strToItems(parts[1], LANG_KEYS) : ['English'],
+        watchTags: strToItems(parts[2], WATCH_KEYS),
+        readTags: strToItems(parts[3], READ_KEYS),
+        listenTags: strToItems(parts[4], LISTEN_KEYS),
+        foodType: (FOOD_TYPE_KEYS[Number(parts[5])] || 'Both') as any,
+        foodMood: (FOOD_MOOD_KEYS[Number(parts[6])] || 'Comfort') as any,
+        foodPlatform: (PLATFORM_KEYS[Number(parts[7])] || 'any') as any,
+        cuisines: strToItems(parts[8], CUISINE_KEYS),
+      };
+    }
+    // Legacy JSON format
+    const decoded = JSON.parse(raw);
     if (decoded.timeOfDay && (decoded.watchTags || decoded.languages)) {
-      // Ensure new fields have defaults
       if (!decoded.languages) decoded.languages = ['English'];
       if (!decoded.foodType) {
         decoded.foodType = 'Both';
