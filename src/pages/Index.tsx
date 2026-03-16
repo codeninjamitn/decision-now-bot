@@ -12,6 +12,12 @@ import type { Friend } from "@/data/friends";
 
 type View = "onboarding" | "main";
 
+interface SharedRec {
+  title: string;
+  category: Category;
+  from: string;
+}
+
 const Index = () => {
   const [view, setView] = useState<View>("onboarding");
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -19,16 +25,47 @@ const Index = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [showRecommendation, setShowRecommendation] = useState(false);
+  const [sharedRec, setSharedRec] = useState<SharedRec | null>(null);
+  const [pendingSharedRec, setPendingSharedRec] = useState<SharedRec | null>(null);
 
   useEffect(() => {
     const saved = loadProfile();
+    const params = new URLSearchParams(window.location.search);
+
+    // Check for shared recommendation link
+    const recTitle = params.get("rec");
+    const recCat = params.get("cat") as Category | null;
+    const recFrom = params.get("from");
+
+    if (recTitle && recCat && recFrom) {
+      const rec: SharedRec = { title: recTitle, category: recCat, from: recFrom };
+      if (saved) {
+        setProfile(saved);
+        setView("main");
+        setCategory(recCat);
+        setSharedRec(rec);
+        setShowRecommendation(true);
+      } else {
+        // Store pending, go to onboarding first
+        setPendingSharedRec(rec);
+      }
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+      return;
+    }
+
+    // Check for taste share link
+    const tasteCode = params.get("taste");
+    if (tasteCode) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+
     if (saved) {
       setProfile(saved);
       setView("main");
     }
   }, []);
 
-  // Re-init theme class on mount
   useEffect(() => {
     const theme = localStorage.getItem("zr-theme");
     if (theme === "dark") document.documentElement.classList.add("dark");
@@ -37,11 +74,20 @@ const Index = () => {
   const handleOnboardingComplete = (p: UserProfile) => {
     setProfile(p);
     setView("main");
+
+    // If there's a pending shared recommendation, show it now
+    if (pendingSharedRec) {
+      setCategory(pendingSharedRec.category);
+      setSharedRec(pendingSharedRec);
+      setShowRecommendation(true);
+      setPendingSharedRec(null);
+    }
   };
 
   const handleCategorySelect = (cat: Category, friend?: Friend) => {
     setCategory(cat);
     setSelectedFriend(friend || null);
+    setSharedRec(null);
     setShowRecommendation(true);
   };
 
@@ -49,6 +95,7 @@ const Index = () => {
     setShowRecommendation(false);
     setCategory(null);
     setSelectedFriend(null);
+    setSharedRec(null);
   };
 
   const handleResetProfile = () => {
@@ -76,6 +123,7 @@ const Index = () => {
             profile={profile}
             onHome={handleHome}
             friend={selectedFriend}
+            sharedRec={sharedRec}
           />
         ) : tab === "home" ? (
           <HomeGrid key="home" onSelect={handleCategorySelect} />

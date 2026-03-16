@@ -156,14 +156,21 @@ export default function HistoryTab() {
                 <span className="text-sm">{CATEGORY_LABELS[entry.category].emoji}</span>
                 <div>
                   <p className="text-sm text-foreground line-clamp-1">
-                    {entry.friendName && <span className="mr-1">🤝</span>}
                     {entry.itemTitle}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {new Date(entry.timestamp).toLocaleDateString()}
-                    {entry.friendName && ` · via ${entry.friendName}`}
-                    {entry.language && ` · ${entry.language}`}
-                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span className="text-[10px] text-muted-foreground">
+                      {new Date(entry.timestamp).toLocaleDateString()}
+                    </span>
+                    {entry.friendName && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-[9px] font-medium text-primary">
+                        🤝 via {entry.friendName}
+                      </span>
+                    )}
+                    {entry.language && (
+                      <span className="text-[10px] text-muted-foreground">· {entry.language}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <span className="text-xs">
