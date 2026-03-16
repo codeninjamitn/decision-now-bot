@@ -91,7 +91,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
 
         {/* Secondary options */}
         {secondaryIds.length > 0 && (
-          <div className="mt-6">
+          <div className="mt-4">
             <p className="text-xs text-muted-foreground mb-3">You could also do these</p>
             <div className="grid grid-cols-2 gap-3">
               {secondaryIds.map(id => {
