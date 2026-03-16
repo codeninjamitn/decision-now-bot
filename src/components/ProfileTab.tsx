@@ -358,8 +358,8 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
                   {copied ? "Copied!" : "Copy code"}
                 </button>
                 <p className="text-xs text-muted-foreground mb-2 text-center">Or scan this QR code:</p>
-                <div className="flex justify-center bg-white p-3 rounded-lg">
-                  <QRCode value={shareUrl} size={140} level="M" />
+                <div className="flex justify-center bg-white p-4 rounded-lg">
+                  <QRCode value={shareUrl} size={180} level="L" />
                 </div>
               </motion.div>
             )}
