@@ -147,6 +147,27 @@ export default function HistoryTab() {
           })}
         </section>
 
+        {/* Friend recommended count */}
+        {(() => {
+          const friendRecs = stats.history.filter(h => h.friendName);
+          if (friendRecs.length === 0) return null;
+          const friendCounts: Record<string, number> = {};
+          friendRecs.forEach(h => {
+            if (h.friendName) friendCounts[h.friendName] = (friendCounts[h.friendName] || 0) + 1;
+          });
+          return (
+            <section className="mb-8">
+              <p className="text-meta mb-4">Friend Influenced</p>
+              {Object.entries(friendCounts).sort((a, b) => b[1] - a[1]).map(([name, count]) => (
+                <div key={name} className="flex items-center justify-between py-1.5">
+                  <span className="text-sm text-foreground">🤝 {name}</span>
+                  <span className="text-xs text-muted-foreground">{count} picks</span>
+                </div>
+              ))}
+            </section>
+          );
+        })()}
+
         {/* Recent history */}
         <section>
           <p className="text-meta mb-4">Recent</p>
@@ -156,14 +177,21 @@ export default function HistoryTab() {
                 <span className="text-sm">{CATEGORY_LABELS[entry.category].emoji}</span>
                 <div>
                   <p className="text-sm text-foreground line-clamp-1">
-                    {entry.friendName && <span className="mr-1">🤝</span>}
                     {entry.itemTitle}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {new Date(entry.timestamp).toLocaleDateString()}
-                    {entry.friendName && ` · via ${entry.friendName}`}
-                    {entry.language && ` · ${entry.language}`}
-                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span className="text-[10px] text-muted-foreground">
+                      {new Date(entry.timestamp).toLocaleDateString()}
+                    </span>
+                    {entry.friendName && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-[9px] font-medium text-primary">
+                        🤝 via {entry.friendName}
+                      </span>
+                    )}
+                    {entry.language && (
+                      <span className="text-[10px] text-muted-foreground">· {entry.language}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <span className="text-xs">

@@ -8,6 +8,7 @@ import { addHistoryEntry, updateHistoryFeedback, loadHistory } from "@/data/hist
 import { getTimeOverride } from "@/data/timeOverride";
 import type { Friend } from "@/data/friends";
 import { blendProfiles } from "@/data/friends";
+import ShareRecommendation from "./ShareRecommendation";
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -16,6 +17,7 @@ interface RecommendationCardProps {
   profile: UserProfile;
   onHome: () => void;
   friend?: Friend | null;
+  sharedRec?: { title: string; from: string } | null;
 }
 
 type AnyItem = WatchItem | EatItem | ReadItem | ListenItem;
@@ -82,7 +84,7 @@ function getItemTitle(category: Category, item: AnyItem): string {
   return "Unknown";
 }
 
-export default function RecommendationCard({ category, profile, onHome, friend }: RecommendationCardProps) {
+export default function RecommendationCard({ category, profile, onHome, friend, sharedRec }: RecommendationCardProps) {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<AnyItem | null>(null);
   const [rerolled, setRerolled] = useState(false);
@@ -276,6 +278,13 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   </span>
                 </div>
               )}
+              {sharedRec && (
+                <div className="mt-3">
+                  <span className="px-2 py-0.5 rounded-full bg-primary/15 text-[10px] font-medium text-primary">
+                    🤝 {sharedRec.from} thinks you'd like this
+                  </span>
+                </div>
+              )}
             </div>
 
             {feedbackState === "none" && (
@@ -346,6 +355,14 @@ export default function RecommendationCard({ category, profile, onHome, friend }
                   >
                     Use my own taste instead
                   </button>
+                )}
+
+                {wasRecommendedBefore && item && (
+                  <ShareRecommendation
+                    category={category}
+                    itemTitle={getItemTitle(category, item)}
+                    senderName="Your friend"
+                  />
                 )}
               </>
             )}
