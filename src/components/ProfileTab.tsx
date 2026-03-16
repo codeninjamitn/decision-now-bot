@@ -33,7 +33,7 @@ interface ProfileTabProps {
 }
 
 export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
-  const { theme, toggle: toggleTheme } = useTheme();
+  const { mode, setMode } = useTheme();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [editingField, setEditingField] = useState<string | null>(null);
