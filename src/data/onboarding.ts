@@ -9,18 +9,18 @@ export interface OnboardingQuestion {
 }
 
 export const LANGUAGE_OPTIONS = [
-  'Hindi', 'Marathi', 'Kannada', 'Tamil', 'Telugu', 'Malayalam',
-  'Gujarati', 'Punjabi', 'Kashmiri', 'Oriya', 'Bengali', 'Assamese', 'English',
+  'Assamese', 'Bengali', 'English', 'Gujarati', 'Hindi', 'Kannada', 'Kashmiri',
+  'Malayalam', 'Marathi', 'Oriya', 'Punjabi', 'Tamil', 'Telugu',
 ];
 
 export const CUISINE_GROUPS = [
   {
     label: '🇮🇳 Indian',
-    options: ['North Indian', 'South Indian', 'Maharashtrian', 'Gujarati', 'Rajasthani', 'Punjabi', 'Kashmiri', 'Bengali', 'Oriya', 'Assamese'],
+    options: ['Assamese', 'Bengali', 'Gujarati', 'Kashmiri', 'Maharashtrian', 'North Indian', 'Oriya', 'Punjabi', 'Rajasthani', 'South Indian'],
   },
   {
     label: '🌍 International',
-    options: ['American', 'Spanish', 'Continental', 'Mediterranean', 'Greek', 'Chinese', 'Vietnamese', 'Burmese', 'Malay', 'Italian', 'Thai'],
+    options: ['American', 'Burmese', 'Chinese', 'Continental', 'Greek', 'Italian', 'Malay', 'Mediterranean', 'Spanish', 'Thai', 'Vietnamese'],
   },
 ];
 
