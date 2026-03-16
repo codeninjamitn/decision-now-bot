@@ -96,13 +96,19 @@ export default function RecommendationCard({ category, profile, onHome, friend, 
   const meta = CATEGORY_META[category];
   const effectiveProfile = friend ? blendProfiles(profile, friend.profile) : profile;
 
-  const generate = (useOwnProfile = false, excludeTitle?: string) => {
+  const findSharedItem = (title: string): AnyItem | null => {
+    const allData: Record<Category, AnyItem[]> = { watch: WATCH_DATA, eat: EAT_DATA, read: READ_DATA, listen: LISTEN_DATA };
+    const items = allData[category];
+    return items.find((i: AnyItem) => getItemTitle(category, i) === title) || null;
+  };
+
+  const generate = (useOwnProfile = false, excludeTitle?: string, forceItem?: AnyItem) => {
     setLoading(true);
     setFeedbackState("none");
     setRegretNote("");
     const p = useOwnProfile ? profile : effectiveProfile;
     setTimeout(() => {
-      const newItem = getItem(category, p, excludeTitle);
+      const newItem = forceItem || getItem(category, p, excludeTitle);
       setItem(newItem);
       const override = getTimeOverride();
       const time = (override || profile.timeOfDay) as TimeOfDay;
