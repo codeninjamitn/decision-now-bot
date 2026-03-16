@@ -147,6 +147,27 @@ export default function HistoryTab() {
           })}
         </section>
 
+        {/* Friend recommended count */}
+        {(() => {
+          const friendRecs = stats.history.filter(h => h.friendName);
+          if (friendRecs.length === 0) return null;
+          const friendCounts: Record<string, number> = {};
+          friendRecs.forEach(h => {
+            if (h.friendName) friendCounts[h.friendName] = (friendCounts[h.friendName] || 0) + 1;
+          });
+          return (
+            <section className="mb-8">
+              <p className="text-meta mb-4">Friend Influenced</p>
+              {Object.entries(friendCounts).sort((a, b) => b[1] - a[1]).map(([name, count]) => (
+                <div key={name} className="flex items-center justify-between py-1.5">
+                  <span className="text-sm text-foreground">🤝 {name}</span>
+                  <span className="text-xs text-muted-foreground">{count} picks</span>
+                </div>
+              ))}
+            </section>
+          );
+        })()}
+
         {/* Recent history */}
         <section>
           <p className="text-meta mb-4">Recent</p>
