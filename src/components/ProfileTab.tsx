@@ -179,9 +179,17 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
       >
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-headline">Profile</h1>
-          <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-muted transition-colors">
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+            <button onClick={() => setMode("light")} className={`p-1.5 rounded-md transition-colors ${mode === "light" ? "bg-background shadow-sm" : "hover:bg-background/50"}`}>
+              <Sun className="w-4 h-4" />
+            </button>
+            <button onClick={() => setMode("system")} className={`p-1.5 rounded-md transition-colors ${mode === "system" ? "bg-background shadow-sm" : "hover:bg-background/50"}`}>
+              <Monitor className="w-4 h-4" />
+            </button>
+            <button onClick={() => setMode("dark")} className={`p-1.5 rounded-md transition-colors ${mode === "dark" ? "bg-background shadow-sm" : "hover:bg-background/50"}`}>
+              <Moon className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Time Override */}
