@@ -86,10 +86,26 @@ export function generateShareCode(profile: UserProfile): string {
 
 export function decodeShareCode(code: string): UserProfile | null {
   try {
-    const decoded = JSON.parse(atob(code));
-    // Check for required fields (support both old and new profiles)
+    const raw = atob(code);
+    // Try new compact format first
+    const parts = raw.split(',');
+    if (parts.length === 9) {
+      const timeIdx = Number(parts[0]);
+      return {
+        timeOfDay: TIME_KEYS[timeIdx] || 'evening',
+        languages: strToItems(parts[1], LANG_KEYS).length ? strToItems(parts[1], LANG_KEYS) : ['English'],
+        watchTags: strToItems(parts[2], WATCH_KEYS),
+        readTags: strToItems(parts[3], READ_KEYS),
+        listenTags: strToItems(parts[4], LISTEN_KEYS),
+        foodType: (FOOD_TYPE_KEYS[Number(parts[5])] || 'Both') as any,
+        foodMood: (FOOD_MOOD_KEYS[Number(parts[6])] || 'Comfort') as any,
+        foodPlatform: (PLATFORM_KEYS[Number(parts[7])] || 'any') as any,
+        cuisines: strToItems(parts[8], CUISINE_KEYS),
+      };
+    }
+    // Legacy JSON format
+    const decoded = JSON.parse(raw);
     if (decoded.timeOfDay && (decoded.watchTags || decoded.languages)) {
-      // Ensure new fields have defaults
       if (!decoded.languages) decoded.languages = ['English'];
       if (!decoded.foodType) {
         decoded.foodType = 'Both';
