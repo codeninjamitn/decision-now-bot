@@ -68,7 +68,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
           )}
         </div>
         <h1 className="text-headline mb-2">{TIME_GREETING[timeSlot]}</h1>
-        <p className="text-sm text-muted-foreground mb-8">We believe you want to...</p>
+        <p className="text-sm text-muted-foreground mb-5">We believe you want to...</p>
 
         {/* Primary recommendations */}
         <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
