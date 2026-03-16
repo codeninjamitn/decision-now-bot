@@ -84,7 +84,7 @@ function getItemTitle(category: Category, item: AnyItem): string {
   return "Unknown";
 }
 
-export default function RecommendationCard({ category, profile, onHome, friend }: RecommendationCardProps) {
+export default function RecommendationCard({ category, profile, onHome, friend, sharedRec }: RecommendationCardProps) {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<AnyItem | null>(null);
   const [rerolled, setRerolled] = useState(false);
