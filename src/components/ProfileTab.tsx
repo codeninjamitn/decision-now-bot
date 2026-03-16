@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Moon, Sun, Pencil, Copy, UserPlus, Trash2, Clock } from "lucide-react";
+import QRCode from "react-qr-code";
 import { ONBOARDING_QUESTIONS, CUISINE_GROUPS, UserProfile, saveProfile, loadProfile } from "@/data/onboarding";
 import type { FoodType, FoodMood, FoodPlatform } from "@/data/onboarding";
 import { loadFriends, removeFriend, addFriend, generateShareCode, type Friend } from "@/data/friends";
 import { getTimeOverride, setTimeOverride, clearTimeOverride } from "@/data/timeOverride";
 import type { TimeOfDay } from "@/data/recommendations";
 import { useTheme } from "@/hooks/useTheme";
-import qrcode from "qrcode-generator";
 
 const transition = { duration: 0.3, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -25,6 +25,8 @@ const FOOD_PLATFORM_OPTIONS: { id: FoodPlatform; label: string }[] = [
   { id: 'zomato', label: 'Zomato' },
   { id: 'any', label: "Doesn't matter" },
 ];
+
+const APP_URL = "https://decision-now-bot.lovable.app";
 
 interface ProfileTabProps {
   onResetProfile: () => void;
@@ -44,7 +46,6 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   const [copied, setCopied] = useState(false);
   const [timeOverride, setTimeOverrideState] = useState<TimeOfDay | null>(null);
   const [resetStep, setResetStep] = useState(0);
-  // Food editing state
   const [editFoodType, setEditFoodType] = useState<FoodType>('Both');
   const [editFoodMood, setEditFoodMood] = useState<FoodMood>('Comfort');
   const [editFoodPlatform, setEditFoodPlatform] = useState<FoodPlatform>('any');
@@ -58,6 +59,7 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
   if (!profile) return null;
 
   const shareCode = generateShareCode(profile);
+  const shareUrl = `${APP_URL}?taste=${encodeURIComponent(shareCode)}`;
 
   const handleEditStart = (fieldId: string) => {
     if (fieldId === 'foodPreference') {
@@ -157,14 +159,6 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
     onResetProfile();
   };
 
-  const generateQR = () => {
-    const qr = qrcode(0, "M");
-    qr.addData(shareCode);
-    qr.make();
-    return qr.createDataURL(4, 0);
-  };
-
-  // Get display value for each field
   const getFieldDisplay = (fieldId: string): string => {
     if (fieldId === 'foodPreference') {
       return `${profile.foodType} · ${profile.foodMood} · ${profile.foodPlatform === 'any' ? "Any platform" : profile.foodPlatform === 'swiggy' ? 'Swiggy' : 'Zomato'}`;
@@ -355,8 +349,9 @@ export default function ProfileTab({ onResetProfile }: ProfileTabProps) {
                 <button onClick={handleCopy} className="w-full py-2 bg-foreground text-background rounded-lg text-sm font-medium mb-3">
                   {copied ? "Copied!" : "Copy code"}
                 </button>
-                <div className="flex justify-center">
-                  <img src={generateQR()} alt="QR Code" className="w-32 h-32 rounded-lg" />
+                <p className="text-xs text-muted-foreground mb-2 text-center">Or scan this QR code:</p>
+                <div className="flex justify-center bg-white p-3 rounded-lg">
+                  <QRCode value={shareUrl} size={140} level="M" />
                 </div>
               </motion.div>
             )}
