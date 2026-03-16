@@ -71,7 +71,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
         <p className="text-sm text-muted-foreground mb-5">We believe you want to...</p>
 
         {/* Primary recommendations */}
-        <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
+        <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
           {primaryIds.map(id => {
             const cat = ALL_CATEGORIES[id];
             return (
