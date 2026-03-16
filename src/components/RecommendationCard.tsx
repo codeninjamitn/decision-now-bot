@@ -356,6 +356,14 @@ export default function RecommendationCard({ category, profile, onHome, friend, 
                     Use my own taste instead
                   </button>
                 )}
+
+                {wasRecommendedBefore && item && (
+                  <ShareRecommendation
+                    category={category}
+                    itemTitle={getItemTitle(category, item)}
+                    senderName="Your friend"
+                  />
+                )}
               </>
             )}
 
