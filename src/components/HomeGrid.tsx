@@ -55,7 +55,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center max-w-md mx-auto px-6 pt-8 pb-20">
+    <div className="min-h-screen flex flex-col justify-start max-w-md mx-auto px-6 pt-6 pb-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -68,10 +68,10 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
           )}
         </div>
         <h1 className="text-headline mb-2">{TIME_GREETING[timeSlot]}</h1>
-        <p className="text-sm text-muted-foreground mb-8">We believe you want to...</p>
+        <p className="text-sm text-muted-foreground mb-5">We believe you want to...</p>
 
         {/* Primary recommendations */}
-        <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
+        <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
           {primaryIds.map(id => {
             const cat = ALL_CATEGORIES[id];
             return (
@@ -80,7 +80,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
                 onClick={() => onSelect(id)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className={`aspect-[4/3] rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-4 ${cat.bgClass}`}
+                className={`aspect-[5/3] rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-4 ${cat.bgClass}`}
               >
                 <span className="text-3xl mb-2">{cat.emoji}</span>
                 <span className="text-sm font-medium text-foreground">{cat.label}</span>
@@ -91,7 +91,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
 
         {/* Secondary options */}
         {secondaryIds.length > 0 && (
-          <div className="mt-6">
+          <div className="mt-4">
             <p className="text-xs text-muted-foreground mb-3">You could also do these</p>
             <div className="grid grid-cols-2 gap-3">
               {secondaryIds.map(id => {
@@ -115,7 +115,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
 
         {/* Friend pills */}
         {friends.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-5">
             <p className="text-xs text-muted-foreground mb-3">🤝 Surprise me like...</p>
             <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
               {friends.map(friend => (
