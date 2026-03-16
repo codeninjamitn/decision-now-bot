@@ -115,7 +115,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
 
         {/* Friend pills */}
         {friends.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-5">
             <p className="text-xs text-muted-foreground mb-3">🤝 Surprise me like...</p>
             <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
               {friends.map(friend => (
