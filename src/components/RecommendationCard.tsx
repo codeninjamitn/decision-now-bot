@@ -130,7 +130,16 @@ export default function RecommendationCard({ category, profile, onHome, friend, 
     }, 1200);
   };
 
-  useState(() => { generate(); });
+  useState(() => {
+    if (sharedRec) {
+      const found = findSharedItem(sharedRec.title);
+      if (found) {
+        generate(false, undefined, found);
+        return;
+      }
+    }
+    generate();
+  });
 
   const handleReroll = () => {
     setRerolled(true);
