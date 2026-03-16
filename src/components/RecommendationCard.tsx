@@ -278,6 +278,13 @@ export default function RecommendationCard({ category, profile, onHome, friend, 
                   </span>
                 </div>
               )}
+              {sharedRec && (
+                <div className="mt-3">
+                  <span className="px-2 py-0.5 rounded-full bg-primary/15 text-[10px] font-medium text-primary">
+                    🤝 {sharedRec.from} thinks you'd like this
+                  </span>
+                </div>
+              )}
             </div>
 
             {feedbackState === "none" && (
