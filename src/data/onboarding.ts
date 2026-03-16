@@ -9,18 +9,18 @@ export interface OnboardingQuestion {
 }
 
 export const LANGUAGE_OPTIONS = [
-  'Hindi', 'Marathi', 'Kannada', 'Tamil', 'Telugu', 'Malayalam',
-  'Gujarati', 'Punjabi', 'Kashmiri', 'Oriya', 'Bengali', 'Assamese', 'English',
+  'Assamese', 'Bengali', 'English', 'Gujarati', 'Hindi', 'Kannada', 'Kashmiri',
+  'Malayalam', 'Marathi', 'Oriya', 'Punjabi', 'Tamil', 'Telugu',
 ];
 
 export const CUISINE_GROUPS = [
   {
     label: '🇮🇳 Indian',
-    options: ['North Indian', 'South Indian', 'Maharashtrian', 'Gujarati', 'Rajasthani', 'Punjabi', 'Kashmiri', 'Bengali', 'Oriya', 'Assamese'],
+    options: ['Assamese', 'Bengali', 'Gujarati', 'Kashmiri', 'Maharashtrian', 'North Indian', 'Oriya', 'Punjabi', 'Rajasthani', 'South Indian'],
   },
   {
     label: '🌍 International',
-    options: ['American', 'Spanish', 'Continental', 'Mediterranean', 'Greek', 'Chinese', 'Vietnamese', 'Burmese', 'Malay', 'Italian', 'Thai'],
+    options: ['American', 'Burmese', 'Chinese', 'Continental', 'Greek', 'Italian', 'Malay', 'Mediterranean', 'Spanish', 'Thai', 'Vietnamese'],
   },
 ];
 
@@ -41,21 +41,21 @@ export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
   {
     id: 'watchTags',
     question: 'Pick 3 YouTube categories you enjoy',
-    options: ['Tech', 'Comedy', 'Learning', 'Chill/ASMR', 'Fitness', 'Food', 'News', 'Gaming'],
+    options: ['Chill/ASMR', 'Comedy', 'Fitness', 'Food', 'Gaming', 'Learning', 'News', 'Tech'],
     multiSelect: true,
     maxSelections: 3,
   },
   {
     id: 'readTags',
     question: 'Pick 3 reading interests',
-    options: ['Technology', 'Philosophy', 'Science', 'Self-improvement', 'Fiction/Stories', 'Finance', 'Design', 'Culture'],
+    options: ['Culture', 'Design', 'Fiction/Stories', 'Finance', 'Philosophy', 'Science', 'Self-improvement', 'Technology'],
     multiSelect: true,
     maxSelections: 3,
   },
   {
     id: 'listenTags',
     question: 'Pick 3 listening preferences',
-    options: ['True Crime', 'Comedy Podcasts', 'News Briefings', 'Chill Music', 'Focus/Lo-fi', 'Interviews', 'Motivational', 'Audiobooks'],
+    options: ['Audiobooks', 'Chill Music', 'Comedy Podcasts', 'Focus/Lo-fi', 'Interviews', 'Motivational', 'News Briefings', 'True Crime'],
     multiSelect: true,
     maxSelections: 3,
   },
