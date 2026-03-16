@@ -5,12 +5,36 @@ import BuildItCTA from "@/components/BuildItCTA";
 import { loadFriends, type Friend } from "@/data/friends";
 import { getTimeOverride } from "@/data/timeOverride";
 
-const CATEGORIES: { id: Category; label: string; emoji: string; colorClass: string; bgClass: string }[] = [
-  { id: "watch", label: "Watch something", emoji: "📺", colorClass: "category-watch", bgClass: "bg-category-watch" },
-  { id: "eat", label: "Eat something", emoji: "🍽️", colorClass: "category-eat", bgClass: "bg-category-eat" },
-  { id: "read", label: "Read something", emoji: "📖", colorClass: "category-read", bgClass: "bg-category-read" },
-  { id: "listen", label: "Listen to something", emoji: "🎧", colorClass: "category-listen", bgClass: "bg-category-listen" },
-];
+const ALL_CATEGORIES: Record<Category, { label: string; emoji: string; bgClass: string }> = {
+  watch: { label: "Watch something", emoji: "📺", bgClass: "bg-category-watch" },
+  eat: { label: "Eat something", emoji: "🍽️", bgClass: "bg-category-eat" },
+  read: { label: "Read something", emoji: "📖", bgClass: "bg-category-read" },
+  listen: { label: "Listen to something", emoji: "🎧", bgClass: "bg-category-listen" },
+};
+
+type TimeSlot = "morning" | "afternoon" | "evening" | "night";
+
+function getCurrentTimeSlot(): TimeSlot {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour < 12) return "morning";
+  if (hour >= 12 && hour < 17) return "afternoon";
+  if (hour >= 17 && hour < 20) return "evening";
+  return "night";
+}
+
+const TIME_PRIMARY: Record<TimeSlot, Category[]> = {
+  morning: ["listen", "eat"],
+  afternoon: ["eat", "listen", "read"],
+  evening: ["eat"],
+  night: ["watch", "read"],
+};
+
+const TIME_GREETING: Record<TimeSlot, string> = {
+  morning: "Good morning ☀️",
+  afternoon: "Good afternoon 🌤️",
+  evening: "Good evening 🌅",
+  night: "Night owl? 🌙",
+};
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -21,6 +45,10 @@ interface HomeGridProps {
 export default function HomeGrid({ onSelect }: HomeGridProps) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const hasOverride = !!getTimeOverride();
+
+  const timeSlot = getCurrentTimeSlot();
+  const primaryIds = TIME_PRIMARY[timeSlot];
+  const secondaryIds = (Object.keys(ALL_CATEGORIES) as Category[]).filter(c => !primaryIds.includes(c));
 
   useEffect(() => {
     setFriends(loadFriends());
@@ -39,22 +67,51 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
             <span className="w-2 h-2 rounded-full bg-accent-eat" title="Time override active" />
           )}
         </div>
-        <h1 className="text-headline mb-10">What do you need right now?</h1>
+        <h1 className="text-headline mb-2">{TIME_GREETING[timeSlot]}</h1>
+        <p className="text-sm text-muted-foreground mb-8">We believe you want to...</p>
 
-        <div className="grid grid-cols-2 gap-4">
-          {CATEGORIES.map(cat => (
-            <motion.button
-              key={cat.id}
-              onClick={() => onSelect(cat.id)}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className={`aspect-square rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-5 ${cat.bgClass}`}
-            >
-              <span className="text-3xl mb-2">{cat.emoji}</span>
-              <span className="text-sm font-medium text-foreground">{cat.label}</span>
-            </motion.button>
-          ))}
+        {/* Primary recommendations */}
+        <div className={`grid ${primaryIds.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
+          {primaryIds.map(id => {
+            const cat = ALL_CATEGORIES[id];
+            return (
+              <motion.button
+                key={id}
+                onClick={() => onSelect(id)}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`aspect-square rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex flex-col items-start justify-end p-5 ${cat.bgClass}`}
+              >
+                <span className="text-3xl mb-2">{cat.emoji}</span>
+                <span className="text-sm font-medium text-foreground">{cat.label}</span>
+              </motion.button>
+            );
+          })}
         </div>
+
+        {/* Secondary options */}
+        {secondaryIds.length > 0 && (
+          <div className="mt-6">
+            <p className="text-xs text-muted-foreground mb-3">You could also do these</p>
+            <div className="grid grid-cols-2 gap-3">
+              {secondaryIds.map(id => {
+                const cat = ALL_CATEGORIES[id];
+                return (
+                  <motion.button
+                    key={id}
+                    onClick={() => onSelect(id)}
+                    whileHover={{ y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`rounded-xl shadow-card hover:shadow-card-hover transition-shadow duration-200 flex items-center gap-3 p-4 ${cat.bgClass} opacity-80`}
+                  >
+                    <span className="text-xl">{cat.emoji}</span>
+                    <span className="text-xs font-medium text-foreground">{cat.label}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Friend pills */}
         {friends.length > 0 && (
