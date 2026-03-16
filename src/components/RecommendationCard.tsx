@@ -17,6 +17,7 @@ interface RecommendationCardProps {
   profile: UserProfile;
   onHome: () => void;
   friend?: Friend | null;
+  sharedRec?: { title: string; from: string } | null;
 }
 
 type AnyItem = WatchItem | EatItem | ReadItem | ListenItem;
