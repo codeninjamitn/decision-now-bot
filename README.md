@@ -23,6 +23,8 @@ We all face decision fatigue daily — *What should I eat? What should I watch?*
 
 **Live App**: [https://decision-now-bot.lovable.app](https://decision-now-bot.lovable.app)
 
+👉 **We'd love your support!** Visit the app, tap **"Yes, I'm in"** and enter your **name, email, and mobile number** to join the waitlist. Your support helps us validate the idea and build Decision Now into a full-fledged product. We'll only reach out when something great is ready — promise! 🚀
+
 ## Tech Stack
 
 - React + TypeScript
