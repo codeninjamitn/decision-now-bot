@@ -134,7 +134,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 type="text"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
-                placeholder="Enter your full name with space between first name and last name"
+                placeholder="Full name with space between first and last name"
                 className="w-full px-4 py-3.5 rounded-lg text-sm font-medium bg-card shadow-card border border-border focus:outline-none focus:ring-2 focus:ring-foreground/20 text-foreground placeholder:text-muted-foreground"
                 autoFocus
                 onKeyDown={(e) => {
