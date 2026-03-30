@@ -43,7 +43,7 @@ npm run dev
 
 ## Deployment
 
-Open [Lovable](https://lovable.dev/projects/97bb07c3-c4c7-49d7-a880-31f70cfd1c5a) and click **Share → Publish**.
+Deploy via Lovable and click **Share → Publish**.
 
 ---
 
