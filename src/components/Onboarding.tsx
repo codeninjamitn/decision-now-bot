@@ -131,7 +131,16 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
+      {step > 0 && (
+        <button
+          onClick={handleBack}
+          className="mb-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          ← Back
+        </button>
+      )}
+
+
         <motion.div
           key={step}
           initial={{ opacity: 0, x: 40 }}
