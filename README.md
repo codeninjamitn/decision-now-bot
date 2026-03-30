@@ -1,73 +1,50 @@
-# Welcome to your Lovable project
+# Decision Now (Zero Regrets)
 
-## Project info
+**Your hyper-personal recommendation engine** — helping you decide what to eat, watch, read, or listen to based on the time of day, your preferences, and your friends' tastes.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## What does it do?
 
-## How can I edit this code?
+We all face decision fatigue daily — *What should I eat? What should I watch?* Decision Now eliminates that friction by learning your preferences during onboarding and serving time-aware, personalized suggestions:
 
-There are several ways of editing your application.
+- 🌅 **Morning** — Music & breakfast ideas to start your day
+- ☀️ **Afternoon** — Lunch spots & reading/listening picks
+- 🌇 **Evening** — Dinner recommendations
+- 🌙 **Night** — Shows to watch & books to read
 
-**Use Lovable**
+### Key Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Hyper-personal onboarding** — Language, cuisine, content & time preferences
+- **Time-aware recommendations** — Suggestions adapt to your local time of day
+- **Friend recommendations** — Share your taste via QR code; see what friends recommend
+- **Privacy-first** — We never sell your data and only reach out when something great is ready
+- **Waitlist** — Join early to get notified when the full product launches
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Info
 
-**Use your preferred IDE**
+**URL**: https://lovable.dev/projects/97bb07c3-c4c7-49d7-a880-31f70cfd1c5a
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- Framer Motion
+- Lovable Cloud (backend)
 
-Follow these steps:
+## Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Open [Lovable](https://lovable.dev/projects/97bb07c3-c4c7-49d7-a880-31f70cfd1c5a) and click **Share → Publish**.
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Built with ❤️ by [Amit Navare](https://github.com/codeninjamitn/) and Team for the world from Bharat 🇮🇳
