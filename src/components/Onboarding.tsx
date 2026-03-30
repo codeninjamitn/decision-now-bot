@@ -21,6 +21,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [selected, setSelected] = useState<string[]>([]);
+  const [textInput, setTextInput] = useState('');
   // Food compound step state
   const [foodType, setFoodType] = useState<FoodType | null>(null);
   const [foodMood, setFoodMood] = useState<FoodMood | null>(null);
@@ -30,6 +31,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const isLast = step === ONBOARDING_QUESTIONS.length - 1;
   const isFoodStep = question.id === 'foodPreference';
   const isCuisineStep = question.id === 'cuisines';
+  const isTextStep = !!question.isTextInput;
 
   const handleSelect = (option: string) => {
     if (isFoodStep) return; // Handled separately
@@ -50,6 +52,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const advance = (currentAnswers: Record<string, string | string[]>) => {
     if (isLast) {
       const profile: UserProfile = {
+        fullName: (currentAnswers.fullName as string) || '',
         timeOfDay: (currentAnswers.timeOfDay as string || 'evening').toLowerCase(),
         languages: (currentAnswers.languages as string[]) || ['English'],
         watchTags: (currentAnswers.watchTags as string[]) || [],
@@ -65,10 +68,17 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
     } else {
       setStep(s => s + 1);
       setSelected([]);
+      setTextInput('');
     }
   };
 
   const handleContinue = () => {
+    if (isTextStep) {
+      const newAnswers = { ...answers, [question.id]: textInput.trim() };
+      setAnswers(newAnswers);
+      advance(newAnswers);
+      return;
+    }
     if (isFoodStep) {
       const newAnswers = { ...answers, foodType: foodType!, foodMood: foodMood!, foodPlatform: foodPlatform! };
       setAnswers(newAnswers);
@@ -81,6 +91,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   const canContinue = (() => {
+    if (isTextStep) return textInput.trim().length >= 2;
     if (isFoodStep) return !!foodType && !!foodMood && !!foodPlatform;
     if (question.multiSelect) {
       if (question.minSelections) return selected.length >= question.minSelections;
@@ -115,6 +126,23 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             {step + 1} of {ONBOARDING_QUESTIONS.length}
           </p>
           <h2 className="text-headline mb-8">{question.question}</h2>
+
+          {/* Text input step */}
+          {isTextStep && (
+            <div>
+              <input
+                type="text"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                placeholder="Enter your full name with space between first name and last name"
+                className="w-full px-4 py-3.5 rounded-lg text-sm font-medium bg-card shadow-card border border-border focus:outline-none focus:ring-2 focus:ring-foreground/20 text-foreground placeholder:text-muted-foreground"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && canContinue) handleContinue();
+                }}
+              />
+            </div>
+          )}
 
           {/* Food compound step */}
           {isFoodStep && (
@@ -227,8 +255,8 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             </div>
           )}
 
-          {/* Continue button for multi-select & food step */}
-          {(question.multiSelect || isFoodStep) && (
+          {/* Continue button for multi-select, food step & text input */}
+          {(question.multiSelect || isFoodStep || isTextStep) && (
             <motion.button
               onClick={handleContinue}
               disabled={!canContinue}
