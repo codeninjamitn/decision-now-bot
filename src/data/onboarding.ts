@@ -6,6 +6,7 @@ export interface OnboardingQuestion {
   maxSelections?: number;
   minSelections?: number;
   groups?: { label: string; options: string[] }[];
+  isTextInput?: boolean;
 }
 
 export const LANGUAGE_OPTIONS = [
@@ -25,6 +26,13 @@ export const CUISINE_GROUPS = [
 ];
 
 export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
+  {
+    id: 'fullName',
+    question: 'What should we call you?',
+    options: [],
+    multiSelect: false,
+    isTextInput: true,
+  },
   {
     id: 'timeOfDay',
     question: 'When do you usually use this?',
@@ -80,6 +88,7 @@ export type FoodMood = 'Healthy' | 'Indulge' | 'Comfort';
 export type FoodPlatform = 'swiggy' | 'zomato' | 'any';
 
 export interface UserProfile {
+  fullName?: string;
   timeOfDay: string;
   languages: string[];
   watchTags: string[];
