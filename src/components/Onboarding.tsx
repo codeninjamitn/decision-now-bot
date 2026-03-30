@@ -69,6 +69,23 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
       setStep(s => s + 1);
       setSelected([]);
       setTextInput('');
+      setFoodType(null);
+      setFoodMood(null);
+      setFoodPlatform(null);
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 0) return;
+    const prevStep = step - 1;
+    const prevQuestion = ONBOARDING_QUESTIONS[prevStep];
+    setStep(prevStep);
+    setSelected(Array.isArray(answers[prevQuestion.id]) ? (answers[prevQuestion.id] as string[]) : []);
+    setTextInput(prevQuestion.isTextInput && answers[prevQuestion.id] ? String(answers[prevQuestion.id]) : '');
+    if (prevQuestion.id === 'foodPreference') {
+      setFoodType((answers.foodType as FoodType) || null);
+      setFoodMood((answers.foodMood as FoodMood) || null);
+      setFoodPlatform((answers.foodPlatform as FoodPlatform) || null);
     }
   };
 
