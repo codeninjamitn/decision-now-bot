@@ -91,7 +91,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   const canContinue = (() => {
-    if (isTextStep) return textInput.trim().length >= 1;
+    if (isTextStep) return textInput.trim().length >= 3;
     if (isFoodStep) return !!foodType && !!foodMood && !!foodPlatform;
     if (question.multiSelect) {
       if (question.minSelections) return selected.length >= question.minSelections;
