@@ -140,7 +140,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         </button>
       )}
 
-
+      <AnimatePresence mode="wait">
         <motion.div
           key={step}
           initial={{ opacity: 0, x: 40 }}
