@@ -41,10 +41,6 @@ npm i
 npm run dev
 ```
 
-## Deployment
-
-Deploy via Lovable and click **Share → Publish**.
-
 ---
 
 Built with ❤️ by [Amit Navare](https://github.com/codeninjamitn/) and Team for the world from Bharat 🇮🇳
