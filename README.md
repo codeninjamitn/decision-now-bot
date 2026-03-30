@@ -21,7 +21,7 @@ We all face decision fatigue daily — *What should I eat? What should I watch?*
 
 ## Project Info
 
-**URL**: https://lovable.dev/projects/97bb07c3-c4c7-49d7-a880-31f70cfd1c5a
+**Live App**: [https://decision-now-bot.lovable.app](https://decision-now-bot.lovable.app)
 
 ## Tech Stack
 
