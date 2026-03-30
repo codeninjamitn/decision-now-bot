@@ -127,6 +127,23 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           </p>
           <h2 className="text-headline mb-8">{question.question}</h2>
 
+          {/* Text input step */}
+          {isTextStep && (
+            <div>
+              <input
+                type="text"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                placeholder="Enter your full name with space between first name and last name"
+                className="w-full px-4 py-3.5 rounded-lg text-sm font-medium bg-card shadow-card border border-border focus:outline-none focus:ring-2 focus:ring-foreground/20 text-foreground placeholder:text-muted-foreground"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && canContinue) handleContinue();
+                }}
+              />
+            </div>
+          )}
+
           {/* Food compound step */}
           {isFoodStep && (
             <div>
@@ -238,8 +255,8 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             </div>
           )}
 
-          {/* Continue button for multi-select & food step */}
-          {(question.multiSelect || isFoodStep) && (
+          {/* Continue button for multi-select, food step & text input */}
+          {(question.multiSelect || isFoodStep || isTextStep) && (
             <motion.button
               onClick={handleContinue}
               disabled={!canContinue}

@@ -4,6 +4,7 @@ import type { Category } from "@/data/recommendations";
 import BuildItCTA from "@/components/BuildItCTA";
 import { loadFriends, type Friend } from "@/data/friends";
 import { getTimeOverride } from "@/data/timeOverride";
+import { loadProfile } from "@/data/onboarding";
 
 const ALL_CATEGORIES: Record<Category, { label: string; emoji: string; bgClass: string }> = {
   watch: { label: "Watch something", emoji: "📺", bgClass: "bg-category-watch" },
@@ -29,12 +30,16 @@ const TIME_PRIMARY: Record<TimeSlot, Category[]> = {
   night: ["watch", "read"],
 };
 
-const TIME_GREETING: Record<TimeSlot, string> = {
-  morning: "Good morning ☀️",
-  afternoon: "Good afternoon 🌤️",
-  evening: "Good evening 🌅",
-  night: "Night owl? 🌙",
-};
+function getGreeting(timeSlot: TimeSlot, firstName?: string): string {
+  const name = firstName ? `, ${firstName}` : '';
+  const greetings: Record<TimeSlot, string> = {
+    morning: `Good morning${name} ☀️`,
+    afternoon: `Good afternoon${name} 🌤️`,
+    evening: `Good evening${name} 🌅`,
+    night: `Night owl${name}? 🌙`,
+  };
+  return greetings[timeSlot];
+}
 
 const transition = { duration: 0.4, ease: [0.2, 0, 0, 1] as [number, number, number, number] };
 
@@ -48,6 +53,9 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
 
   const timeSlot = getCurrentTimeSlot();
   const primaryIds = TIME_PRIMARY[timeSlot];
+
+  const profile = loadProfile();
+  const firstName = profile?.fullName?.split(' ')[0] || '';
   const secondaryIds = (Object.keys(ALL_CATEGORIES) as Category[]).filter(c => !primaryIds.includes(c));
 
   useEffect(() => {
@@ -67,7 +75,7 @@ export default function HomeGrid({ onSelect }: HomeGridProps) {
             <span className="w-2 h-2 rounded-full bg-accent-eat" title="Time override active" />
           )}
         </div>
-        <h1 className="text-headline mb-2">{TIME_GREETING[timeSlot]}</h1>
+        <h1 className="text-headline mb-2">{getGreeting(timeSlot, firstName)}</h1>
         <p className="text-sm text-muted-foreground mb-5">We believe you want to...</p>
 
         {/* Primary recommendations */}
