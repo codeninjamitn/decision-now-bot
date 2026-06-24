@@ -33,16 +33,6 @@ We all face decision fatigue daily — *What should I eat? What should I watch?*
 - shadcn/ui
 - Framer Motion
 - Lovable Cloud (backend)
-
-## Development
-
-```sh
-git clone <YOUR_GIT_URL>
-cd <YOUR_PROJECT_NAME>
-npm i
-npm run dev
-```
-
 ---
 
 Built with ❤️ by [Amit Navare](https://github.com/codeninjamitn/) and Team for the world from Bharat 🇮🇳
